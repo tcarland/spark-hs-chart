@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "spark-hs.fullname" . }}-test-connection"
+  labels:
+    {{- include "spark-hs.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "spark-hs.fullname" . }}:{{ .Values.service.externalPort }}']
+  restartPolicy: Never

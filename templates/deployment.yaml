@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "spark-hs.fullname" . }}
+  labels:
+    {{- include "spark-hs.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "spark-hs.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "spark-hs.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "spark-hs.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: [
+              "/bin/sh",
+              "-c",
+              "/opt/spark/sbin/start-history-server.sh"
+          ]
+          env:
+            - name: SPARK_NO_DAEMONIZE
+              value: "false"
+            - name: SPARK_HISTORY_OPTS
+              value: "-Dspark.history.fs.logDirectory={{ .Values.s3logDirectory }} \
+                      -Dspark.hadoop.fs.s3a.endpoint={{ .Values.s3endpoint }} \
+                      -Dspark.hadoop.fs.s3a.access.key={{ .Values.s3accessKey }} \
+                      -Dspark.hadoop.fs.s3a.secret.key={{ .Values.s3secretKey }} \
+                      -Dspark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem"
+            - name: SPARK_CONF_DIR
+              value: /opt/spark/conf
+          volumeMounts:
+            - name: config-volume
+              mountPath: /opt/spark/conf/spark-defaults.conf
+              subPath: spark-defaults.conf
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.internalPort }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "spark-hs.fullname" . }}-spark-hs-config
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
