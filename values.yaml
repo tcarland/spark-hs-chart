@@ -37,7 +37,7 @@ s3logDirectory: ''
 service:
   externalPort: 18080
   internalPort: 18080
-  type: ClusterIP
+  type: NodePort
 
 ingress:
   enabled: false

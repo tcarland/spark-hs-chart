@@ -20,6 +20,7 @@ can be customized by adjusting the values file.
 
 <br>
 
+
 ## Install the Helm Chart
 
 Config parameters can be added to a custom version of *values.yaml* and 
@@ -51,12 +52,14 @@ Alternatively, install via helm command-line.
 helm install --set app.s3logDirectory=s3a://mybucket/eventLogs/,app.s3endpoint=http://endpoint:9000,s3accessKey=xxxxxx,app.s3secretKey=xxxxx --namespace spark spark-hs .
 ```
 
-## Uninstall 
+
+## Uninstall Chart
 
 Simply use helm to remove the deployment
 ```
 helm uninstall --namespace spark spark-hs
 ```
+
 
 ## Accessing the UI
 
@@ -74,3 +77,9 @@ HS_PORT=$( kubectl get service $relname -n $ns -o=json | jq .spec.ports[0].port 
 kubectl port-forward $POD_NAME $HS_PORT --namespace $ns &
 ```
 
+If the service type was set to NodePort, acquire the Application URL
+```bash
+export NODE_PORT=$(kubectl get --namespace spark -o jsonpath="{.spec.ports[0].nodePort}" services spark-hs)
+export NODE_IP=$(kubectl get nodes --namespace spark -o jsonpath="{.items[0].status.addresses[0].address}")
+echo http://$NODE_IP:$NODE_PORT
+```
