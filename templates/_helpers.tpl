@@ -58,6 +58,6 @@ Create the name of the service account to use
 {{- if .Values.serviceAccount.create -}}
     {{ default (include "spark-hs.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.serviceAccount.name }}
+    {{ default "spark" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
