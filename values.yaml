@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: tarland/spark
-  tag: callisto-3.0.1-v2103.17
+  tag: callisto-3.0.2-v2105.09
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []

@@ -68,17 +68,19 @@ helm uninstall --namespace spark spark-hs
 
 ## Accessing the UI
 
-By default the Service is using *ClusterIP*. Typically, we add an ingress gateway
-and use *LoadBalancer*. 
+By default the Service is using *ClusterIP*. Typically, we add an ingress 
+gateway and use *LoadBalancer*. 
 
-A quick validationwould be to port-forward the history server port.
+A quick validation would be to port-forward the history server port.
 ```bash
+# get pod name and service port
 relname="spark-hs"
 ns="spark"
 
 POD_NAME=$(kubectl get pods -n $ns | grep $relname | awk '{ print $1 }')
 HS_PORT=$( kubectl get service $relname -n $ns -o=json | jq .spec.ports[0].port )
 
+# port forward
 kubectl port-forward $POD_NAME $HS_PORT --namespace $ns &
 ```
 
