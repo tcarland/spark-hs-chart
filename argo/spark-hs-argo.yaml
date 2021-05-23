@@ -1,0 +1,33 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: spark-history-server
+  namespace: argocd
+spec:
+  destination:
+    namespace: spark
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    helm:
+      parameters:
+       - name: s3endpoint
+         value: "$MINIO_ENDPOINT"
+       - name: s3accessKey
+         value: "$MINIO_ACCESS_KEY"
+       - name: s3secretKey
+         value: "$MINIO_SECRET_KEY"
+       - name: s3logDirectory
+         value: "s3a://spark/spark-logs"
+       - name: service.type
+         value: "LoadBalancer"
+    chart: spark-hs
+    repoURL: https://tcarland.github.io/spark-hs-chart/
+    targetRevision: 0.3.4
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=tru4

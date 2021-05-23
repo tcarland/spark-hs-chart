@@ -90,3 +90,16 @@ export NODE_PORT=$(kubectl get --namespace spark -o jsonpath="{.spec.ports[0].no
 export NODE_IP=$(kubectl get nodes --namespace spark -o jsonpath="{.items[0].status.addresses[0].address}")
 echo http://$NODE_IP:$NODE_PORT
 ```
+---
+
+## Using Argo CD to deploy a helm chart
+
+Create an Argo Application yaml as in *argo/spark-hs-argo.yaml* which defines
+the required chart values. The argo app sets secrets through environment vars 
+which can be set prior to deploying with committing secrets. The argo app here
+expects *MINIO_ENDPOINT*, *MINIO_ACCESS_KEY*, and *MINIO_SECRET_KEY* to be set.
+
+To deploy to ArgoCD, parse the yaml through `envsubst` and send to `kubectl create`. 
+```
+cat argo/spark-hs-argo.yaml | envsubst | k create -f -
+```
