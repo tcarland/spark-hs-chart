@@ -90,6 +90,7 @@ export NODE_PORT=$(kubectl get --namespace spark -o jsonpath="{.spec.ports[0].no
 export NODE_IP=$(kubectl get nodes --namespace spark -o jsonpath="{.items[0].status.addresses[0].address}")
 echo http://$NODE_IP:$NODE_PORT
 ```
+
 ---
 
 ## Using Argo CD to deploy a helm chart
