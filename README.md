@@ -11,12 +11,12 @@ charts do not account for the S3 requirements.
 The chart takes a few primary config parameters; other options 
 can be customized by adjusting the values file.
 
-|   Option   | Description |
-| ---------- | ----------- |
-| s3endpoint | The S3 Endpoint URL, eg. *http://minio-svc:9000* |
+|     Option     | Description |
+| -------------- | ----------- |
+|  s3endpoint    | The S3 Endpoint URL, eg. *http://minio-svc:9000* |
 | s3logDirectory | The path to s3 bucket, eg. s3a://spark/spark-logs |
-| s3accessKey | The S3 Access Key |
-| s3secretKey | The S3 Secret Key |
+|  s3accessKey   | The S3 Access Key |
+|  s3secretKey   | The S3 Secret Key |
 
 - *s3endpoint* in the format of `http://minio-svc:9000`
 - *s3logDirectory defines the bucket path, which should be a path at 
@@ -89,4 +89,18 @@ If the service type was set to NodePort, acquire the Application URL
 export NODE_PORT=$(kubectl get --namespace spark -o jsonpath="{.spec.ports[0].nodePort}" services spark-hs)
 export NODE_IP=$(kubectl get nodes --namespace spark -o jsonpath="{.items[0].status.addresses[0].address}")
 echo http://$NODE_IP:$NODE_PORT
+```
+---
+
+## Using Argo CD to deploy a helm chart
+
+Create an Argo Application yaml as in *argo/spark-hs-argo.yaml* which defines
+the required chart values. The argo app sets secrets through environment vars 
+which can be set prior to deploying with committing secrets. The argo app yaml
+provided expects *MINIO_ENDPOINT*, *MINIO_ACCESS_KEY*, and *MINIO_SECRET_KEY* 
+to be set.
+
+To deploy to ArgoCD, parse the yaml through `envsubst` and send to `kubectl create`. 
+```
+cat argo/spark-hs-argo.yaml | envsubst | k create -f -
 ```
