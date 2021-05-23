@@ -11,12 +11,12 @@ charts do not account for the S3 requirements.
 The chart takes a few primary config parameters; other options 
 can be customized by adjusting the values file.
 
-|   Option   | Description |
-| ---------- | ----------- |
-| s3endpoint | The S3 Endpoint URL, eg. *http://minio-svc:9000* |
+|     Option     | Description |
+| -------------- | ----------- |
+|  s3endpoint    | The S3 Endpoint URL, eg. *http://minio-svc:9000* |
 | s3logDirectory | The path to s3 bucket, eg. s3a://spark/spark-logs |
-| s3accessKey | The S3 Access Key |
-| s3secretKey | The S3 Secret Key |
+|  s3accessKey   | The S3 Access Key |
+|  s3secretKey   | The S3 Secret Key |
 
 - *s3endpoint* in the format of `http://minio-svc:9000`
 - *s3logDirectory defines the bucket path, which should be a path at 
