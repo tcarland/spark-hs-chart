@@ -26,8 +26,5 @@ spec:
     repoURL: https://tcarland.github.io/spark-hs-chart/
     targetRevision: 0.3.4
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
     - CreateNamespace=true
