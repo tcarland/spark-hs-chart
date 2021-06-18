@@ -34,6 +34,7 @@ passed to helm via `-f myvalues.yaml` or via the `--set` directive.
 A service account for spark should be created either ahead of time or set
 *serviceAccount.create* as *true* in the `values.yaml` file.
 ```
+  kubectl create namespace spark
   kubectl create serviceaccount spark --namespace spark
 
   kubectl create clusterrolebinding spark-rolebinding \
@@ -93,15 +94,17 @@ echo http://$NODE_IP:$NODE_PORT
 
 ---
 
-## Using Argo CD to deploy a helm chart
+## Using ArgoCD to deploy a helm chart
 
-Create an Argo Application yaml as in *argo/spark-hs-argo.yaml* which defines
+An Argo *Application* yaml as in *argo/spark-hs-argo.yaml* which defines
 the required chart values. The argo app sets secrets through environment vars 
-which can be set prior to deploying with committing secrets. The argo app yaml
-provided expects *MINIO_ENDPOINT*, *MINIO_ACCESS_KEY*, and *MINIO_SECRET_KEY* 
-to be set.
+which shold be set prior to deploying. The yaml provided expects *MINIO_ENDPOINT*, 
+*MINIO_ACCESS_KEY*, and *MINIO_SECRET_KEY* to already be configured.
 
 To deploy to ArgoCD, parse the yaml through `envsubst` and send to `kubectl create`. 
 ```
-cat argo/spark-hs-argo.yaml | envsubst | k create -f -
+  export MINIO_ENDPOINT="https://minio.mydomain.internal:9000"
+  export MINIO_ACCESS_KEY="myaccesskey"
+  export MINIO_SECRET_KEY="mysecretkey"
+  cat argo/spark-hs-argo.yaml | envsubst | k create -f -
 ```
