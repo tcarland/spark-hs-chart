@@ -13,11 +13,11 @@ spec:
     helm:
       parameters:
        - name: s3endpoint
-         value: "$MINIO_ENDPOINT"
+         value: "$S3_ENDPOINT"
        - name: s3accessKey
-         value: "$MINIO_ACCESS_KEY"
+         value: "$S3_ACCESS_KEY"
        - name: s3secretKey
-         value: "$MINIO_SECRET_KEY"
+         value: "$S3_SECRET_KEY"
        - name: s3logDirectory
          value: "s3a://spark/spark-logs"
        - name: service.type
