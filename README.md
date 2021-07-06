@@ -43,7 +43,7 @@ A service account for spark should be created either ahead of time or set
     --namespace=spark
 ```
 
-Install by values file
+Install by a values file
 ```
 $ helm install -f <myvalues.yaml> --namespace <ns> <release-name> <path_to_chart>
 ```
@@ -55,7 +55,13 @@ $ helm install -f callisto-values.yaml --namespace spark spark-hs .
 
 Alternatively, install via helm command-line.
 ```
-helm install --create-namespace --set s3endpoint=${S3_ENDPOINT},s3accessKey=${S3_ACCESS_KEY},s3secretKey=${S3_SECRET_KEY},s3logDirectory=s3a://spark/spark-logs --namespace spark spark-hs .
+helm install --create-namespace --set \
+s3endpoint=${S3_ENDPOINT},\
+s3accessKey=${S3_ACCESS_KEY},\
+s3secretKey=${S3_SECRET_KEY},\
+s3logDirectory=s3a://spark/spark-logs,service.type=LoadBalancer \
+--namespace spark \
+spark-hs .
 ```
 
 
