@@ -43,7 +43,7 @@ A service account for spark should be created either ahead of time or set
     --namespace=spark
 ```
 
-Install by values file
+Install by a values file
 ```
 $ helm install -f <myvalues.yaml> --namespace <ns> <release-name> <path_to_chart>
 ```
@@ -55,9 +55,22 @@ $ helm install -f callisto-values.yaml --namespace spark spark-hs .
 
 Alternatively, install via helm command-line.
 ```
-helm install --set app.s3logDirectory=s3a://mybucket/eventLogs/,app.s3endpoint=http://endpoint:9000,s3accessKey=xxxxxx,app.s3secretKey=xxxxx --namespace spark spark-hs .
+helm install --create-namespace --set \
+s3endpoint=${S3_ENDPOINT},\
+s3accessKey=${S3_ACCESS_KEY},\
+s3secretKey=${S3_SECRET_KEY},\
+s3logDirectory=s3a://spark/spark-logs,service.type=LoadBalancer \
+service.type=LoadBalancer \
+--namespace spark \
+spark-hs .
 ```
 
+The github also acts as our chart repository.
+```
+helm repo add spark-hs-chart https://tcarland.github.io/spark-hs-chart/
+helm install spark-history-server spark-hs-chart/spark-hs \
+ --create-namespace --set [options] --namespace spark
+```
 
 ## Uninstall Chart
 
@@ -98,13 +111,13 @@ echo http://$NODE_IP:$NODE_PORT
 
 An Argo *Application* yaml as in *argo/spark-hs-argo.yaml* which defines
 the required chart values. The argo app sets secrets through environment vars 
-which shold be set prior to deploying. The yaml provided expects *MINIO_ENDPOINT*, 
-*MINIO_ACCESS_KEY*, and *MINIO_SECRET_KEY* to already be configured.
+which shold be set prior to deploying. The yaml provided expects *S3_ENDPOINT*, 
+*S3_ACCESS_KEY*, and *S3_SECRET_KEY* to already be configured.
 
 To deploy to ArgoCD, parse the yaml through `envsubst` and send to `kubectl create`. 
 ```
-  export MINIO_ENDPOINT="https://minio.mydomain.internal:9000"
-  export MINIO_ACCESS_KEY="myaccesskey"
-  export MINIO_SECRET_KEY="mysecretkey"
+  export S3_ENDPOINT="https://minio.mydomain.internal:9000"
+  export S3_ACCESS_KEY="myaccesskey"
+  export S3_SECRET_KEY="mysecretkey"
   cat argo/spark-hs-argo.yaml | envsubst | k create -f -
 ```
