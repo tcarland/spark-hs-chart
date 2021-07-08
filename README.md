@@ -60,10 +60,17 @@ s3endpoint=${S3_ENDPOINT},\
 s3accessKey=${S3_ACCESS_KEY},\
 s3secretKey=${S3_SECRET_KEY},\
 s3logDirectory=s3a://spark/spark-logs,service.type=LoadBalancer \
+service.type=LoadBalancer \
 --namespace spark \
 spark-hs .
 ```
 
+The github also acts as our chart repository.
+```
+helm repo add spark-hs-chart https://tcarland.github.io/spark-hs-chart/
+helm install spark-history-server spark-hs-chart/spark-hs \
+ --create-namespace --set [options] --namespace spark
+```
 
 ## Uninstall Chart
 
