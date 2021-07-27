@@ -3,7 +3,17 @@ entries:
   spark-hs:
   - apiVersion: v2
     appVersion: 3.1.2
-    created: "2021-07-08T05:51:29.623364498-07:00"
+    created: "2021-07-27T09:39:22.387706762-07:00"
+    description: A Helm chart for the Spark History Server
+    digest: 6450d8a7d0502934302839c0f611b11a536d52a67e6ff16677d4c34140117731
+    name: spark-hs
+    type: application
+    urls:
+    - https://tcarland.github.io/spark-hs-chart/spark-hs-0.3.7.tgz
+    version: 0.3.7
+  - apiVersion: v2
+    appVersion: 3.1.2
+    created: "2021-07-27T09:39:22.386907785-07:00"
     description: A Helm chart for the Spark History Server
     digest: f01c759b29f8e289cd4e16f13a3e5b587b7b569aeb786873ad879445f1268159
     name: spark-hs
@@ -13,7 +23,7 @@ entries:
     version: 0.3.6
   - apiVersion: v2
     appVersion: 3.0.3
-    created: "2021-07-08T05:51:29.622657679-07:00"
+    created: "2021-07-27T09:39:22.384573023-07:00"
     description: A Helm chart for the Spark History Server
     digest: 545e5eaa700a4befbcd66de24d495159e82716fb80d8f430fb33c546aa476ef6
     name: spark-hs
@@ -21,4 +31,4 @@ entries:
     urls:
     - https://tcarland.github.io/spark-hs-chart/spark-hs-0.3.5.tgz
     version: 0.3.5
-generated: "2021-07-08T05:51:29.615445408-07:00"
+generated: "2021-07-27T09:39:22.38331661-07:00"
