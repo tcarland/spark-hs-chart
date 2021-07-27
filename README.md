@@ -5,6 +5,7 @@ Spark History Server Helm Chart
 using S3 Object Storage for Spark EventLogs. Some of the existing 
 charts do not account for the S3 requirements.
 
+<br>
 
 ## Configuration
 
@@ -22,9 +23,7 @@ can be customized by adjusting the values file.
 - *s3logDirectory defines the bucket path, which should be a path at 
   least one level below the root. ie. `s3a://spark/spark-logs`
 
-
 <br>
-
 
 ## Install the Helm Chart
 

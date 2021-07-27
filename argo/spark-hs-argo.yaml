@@ -24,7 +24,7 @@ spec:
          value: "LoadBalancer"
     chart: spark-hs
     repoURL: https://tcarland.github.io/spark-hs-chart/
-    targetRevision: 0.3.5
+    targetRevision: 0.3.7
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
