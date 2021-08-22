@@ -18,7 +18,6 @@ data:
     spark.hadoop.fs.s3a.committer.threads=2048
     spark.hadoop.fs.s3a.connection.establish.timeout=5000
     spark.hadoop.fs.s3a.connection.maximum=8192
-    spark.hadoop.fs.s3a.connection.ssl.enabled=false
     spark.hadoop.fs.s3a.connection.timeout=200000
     spark.hadoop.fs.s3a.fast.upload.active.blocks=2048
     spark.hadoop.fs.s3a.fast.upload.buffer=disk
