@@ -101,7 +101,7 @@ If the service type was set to NodePort, acquire the Application URL
 ```bash
 export NODE_PORT=$(kubectl get --namespace spark -o jsonpath="{.spec.ports[0].nodePort}" services spark-hs)
 export NODE_IP=$(kubectl get nodes --namespace spark -o jsonpath="{.items[0].status.addresses[0].address}")
-echo http://$NODE_IP:$NODE_PORT
+echo https://$NODE_IP:$NODE_PORT
 ```
 
 ---
@@ -120,3 +120,91 @@ To deploy to ArgoCD, parse the yaml through `envsubst` and send to `kubectl crea
   export S3_SECRET_KEY="mysecretkey"
   cat argo/spark-hs-argo.yaml | envsubst | k create -f -
 ```
+
+
+## TLS 
+
+Certificate should have the service names listed as the SAN
+`DNS:spark-hs.spark.svc.cluster.local,DNS:*.spark.svc.cluster.local,DNS:spark-hs.spark,DNS:spark-hs.spark.svc`
+
+Creating a Java Keystore involves first having a PKCS#12 formatted key pair, as 
+the Java Keytool does not allow for importing private keys.
+
+- Create a PKCS#12 container from a key pair.
+  ```sh
+  openssl pkcs12 -export -in sparkhs.crt -inkey sparkhs.key \
+    -name sparkhs -out sparkhs.pfx
+  ```
+
+- Create the private Keystore
+  ```sh
+  keystore_passwd="mykeypass"
+  keytool -importkeystore -deststorepass $keystore_passwd \
+  -destkeystore keystore.jks -srckeystore sparkhs.pfx -srcstoretype PKCS12
+  ```
+
+- Create the Truststore
+  ```sh
+  cp $JAVA_HOME/jre/lib/security/cacerts ./truststore.jks
+  ```
+
+- Change the password of a truststore
+  ```sh
+  keytool -storepasswd -keystore truststore.jks
+  ```
+
+- Add the CA Certificate to the truststore
+  ```sh
+  keytool -importcert -alias rootca \
+    -keystore truststore.jks -file ca.crt
+  ```
+
+- Set the keystore and truststore values when deploying the helm chart.
+  ```sh
+  keystore_data=$(cat keystore.jks | base64 -w0)
+  truststore_data=$(cat truststore.jks | base64 -w0)
+
+  helm install [...] --set \
+  keystoreBase64=$keystore_data,\
+  keystorePassword=keypass,\
+  truststoreBase64=$truststore_data,\
+  trustStorePassword=changeme
+  ```
+
+### TLS/SSL Spark Configuration 
+
+- `spark.ssl.<ns>` : Settings for a given sub-component
+
+Where <ns> could be:
+- `spark.ssl.ui`   : Spark application WebUI
+- `spark.ssl.standalone`
+- `spark.ssl.historyServer`
+
+```
+${ns}.enabled
+ .port
+ .protocol
+
+ .keyStore
+ .keyStorePassword
+ .keyStoreType=JKS
+ 
+ .trustStore
+ .trustStorePassword
+ .trustStoreType=JKS
+```
+
+Creatng a Secret manually for a Keystore and Truststore
+```
+keystore="$1"
+truststore="$2"
+
+kubectl create secret generic spark-hs-keystore \
+  --from-file=keystore.jks=${keystore} \
+  --from-file=truststore.jks=${truststore} \
+  --dry-run=client -o yaml > secrets.yaml
+```
+
+
+
+

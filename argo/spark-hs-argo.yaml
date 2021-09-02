@@ -22,6 +22,14 @@ spec:
          value: "s3a://spark/spark-logs"
        - name: service.type
          value: "LoadBalancer"
+       - name: secrets.keystoreBase64
+         value: "$KEYSTORE_BASE64"
+       - name: secrets.keystorePassword
+         value: "$KEYSTORE_PASSWD"
+       - name: secrets.truststoreBase64
+         value: "$TRUSTSTORE_BASE64"
+       - name: secrets.truststorePassword
+         value: "$TRUSTSTORE_PASSWD"
     chart: spark-hs
     repoURL: https://tcarland.github.io/spark-hs-chart/
     targetRevision: 0.3.8

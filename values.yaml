@@ -1,5 +1,5 @@
 # Default values for spark-hs-chart.
-
+#
 replicaCount: 1
 
 image:
@@ -32,9 +32,15 @@ s3accessKey: ''
 s3secretKey: ''
 s3logDirectory: ''
 
+secrets:
+  keystoreBase64: ''
+  keystorePassword: ''
+  truststoreBase64: ''
+  truststorePassword: 'changeit'
+
 service:
-  externalPort: 18080
-  internalPort: 18080
+  externalPort: 18443
+  internalPort: 18443
   type: NodePort
 
 ingress:

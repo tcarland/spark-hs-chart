@@ -1,7 +1,7 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: {{ template "spark-hs.fullname" . }}-spark-hs-config
+  name: {{ template "spark-hs.name" . }}-config
 data:
   spark-defaults.conf: |-
     spark.authenticate=false
@@ -28,3 +28,11 @@ data:
     spark.hadoop.fs.s3a.socket.recv.buffer=65536
     spark.hadoop.fs.s3a.socket.send.buffer=65536
     spark.hadoop.fs.s3a.threads.max=2048
+    spark.ssl.historyServer.enabled=true
+    spark.ssl.historyServer.protocol=TLSv1.2
+    spark.ssl.historyServer.keyStore=/mnt/secrets/keystore.jks
+    spark.ssl.historyServer.keyStorePassword={{ .Values.secrets.keystorePassword }}
+    spark.ssl.historyServer.keyStoreType=JKS
+    spark.ssl.historyServer.trustStore=/mnt/secrets/truststore.jks
+    spark.ssl.historyServer.trustStorePassword={{ .Values.secrets.truststorePassword }}
+    spark.ssl.historyServer.trustStoreType=JKS
