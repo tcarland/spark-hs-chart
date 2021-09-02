@@ -39,8 +39,8 @@ secrets:
   truststorePassword: 'changeit'
 
 service:
-  externalPort: 18443
-  internalPort: 18443
+  externalPort: 18080
+  internalPort: 18080
   type: NodePort
 
 ingress:

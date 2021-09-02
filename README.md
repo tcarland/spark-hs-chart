@@ -194,18 +194,17 @@ Where <ns> could be:
 - `spark.ssl.standalone`
 - `spark.ssl.historyServer`
 
+Spark configuration settings to be added to the ConfigMap
 ```
-${ns}.enabled
- .port
- .protocol
-
- .keyStore
- .keyStorePassword
- .keyStoreType=JKS
- 
- .trustStore
- .trustStorePassword
- .trustStoreType=JKS
+    spark.ssl.historyServer.enabled=true
+    spark.ssl.historyServer.protocol=TLSv1.2
+    spark.ssl.historyServer.port={{ .Values.service.externalPort }}
+    spark.ssl.historyServer.keyStore=/mnt/secrets/keystore.jks
+    spark.ssl.historyServer.keyStorePassword={{ .Values.secrets.keystorePassword }}
+    spark.ssl.historyServer.keyStoreType=JKS
+    spark.ssl.historyServer.trustStore=/mnt/secrets/truststore.jks
+    spark.ssl.historyServer.trustStorePassword={{ .Values.secrets.truststorePassword }}
+    spark.ssl.historyServer.trustStoreType=JKS
 ```
 
 Creatng a Secret manually for a Keystore and Truststore

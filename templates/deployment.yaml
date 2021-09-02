@@ -51,7 +51,7 @@ spec:
               mountPath: /mnt/secrets
               readOnly: true
           ports:
-            - name: https
+            - name: http
               containerPort: {{ .Values.service.internalPort }}
               protocol: TCP
           resources:

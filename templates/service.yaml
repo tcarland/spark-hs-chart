@@ -7,9 +7,9 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.externalPort }}
-      targetPort: {{ .Values.service.internalPort }}
+    - name: http
       protocol: TCP
-      name: https
+      port: {{ .Values.service.externalPort }}
+      targetPort: {{ .Values.service.internalPort }}
   selector:
     {{- include "spark-hs.selectorLabels" . | nindent 4 }}
