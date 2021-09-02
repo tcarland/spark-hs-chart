@@ -30,6 +30,7 @@ data:
     spark.hadoop.fs.s3a.threads.max=2048
     spark.ssl.historyServer.enabled=true
     spark.ssl.historyServer.protocol=TLSv1.2
+    spark.ssl.historyServer.port=18443
     spark.ssl.historyServer.keyStore=/mnt/secrets/keystore.jks
     spark.ssl.historyServer.keyStorePassword={{ .Values.secrets.keystorePassword }}
     spark.ssl.historyServer.keyStoreType=JKS
