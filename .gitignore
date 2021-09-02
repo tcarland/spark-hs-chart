@@ -1,2 +1,6 @@
 
+*.jks
+*.crt
+*.cert
+*.key
 *.sw*
