@@ -34,6 +34,8 @@ data:
     spark.ssl.historyServer.port={{ .Values.service.externalPort }}
     spark.ssl.historyServer.keyStore=/mnt/secrets/keystore.jks
     spark.ssl.historyServer.keyStorePassword={{ .Values.secrets.keystorePassword }}
+    {{ end }}
+    {{- if .Values.secrets.truststoreBase64 }}
     spark.ssl.historyServer.keyStoreType=JKS
     spark.ssl.historyServer.trustStore=/mnt/secrets/truststore.jks
     spark.ssl.historyServer.trustStorePassword={{ .Values.secrets.truststorePassword }}
