@@ -28,15 +28,15 @@ data:
     spark.hadoop.fs.s3a.socket.recv.buffer=65536
     spark.hadoop.fs.s3a.socket.send.buffer=65536
     spark.hadoop.fs.s3a.threads.max=2048
+    spark.ssl.historyServer.port={{ .Values.service.internalPort }}
     {{- if .Values.secrets.keystoreBase64 }}
     spark.ssl.historyServer.enabled=true
     spark.ssl.historyServer.protocol=TLSv1.2
-    spark.ssl.historyServer.port={{ .Values.service.internalPort }}
     spark.ssl.historyServer.keyStore=/mnt/secrets/keystore.jks
     spark.ssl.historyServer.keyStorePassword={{ .Values.secrets.keystorePassword }}
-    {{ end }}
-    {{- if .Values.secrets.truststoreBase64 }}
     spark.ssl.historyServer.keyStoreType=JKS
+    {{- end }}
+    {{- if .Values.secrets.truststoreBase64 }}
     spark.ssl.historyServer.trustStore=/mnt/secrets/truststore.jks
     spark.ssl.historyServer.trustStorePassword={{ .Values.secrets.truststorePassword }}
     spark.ssl.historyServer.trustStoreType=JKS
