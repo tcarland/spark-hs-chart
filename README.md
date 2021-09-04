@@ -212,7 +212,8 @@ Creatng a Secret manually for a Keystore and Truststore
 keystore="$1"
 truststore="$2"
 
-kubectl create secret generic spark-hs-keystore \
+kubectl create secret generic spark-keystore \
+  --namespace spark
   --from-file=keystore.jks=${keystore} \
   --from-file=truststore.jks=${truststore} \
   --dry-run=client -o yaml > secrets.yaml
