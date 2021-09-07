@@ -1,7 +1,7 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: {{ template "spark-hs.fullname" . }}-spark-hs-config
+  name: {{ template "spark-hs.name" . }}-config
 data:
   spark-defaults.conf: |-
     spark.authenticate=false
@@ -18,7 +18,6 @@ data:
     spark.hadoop.fs.s3a.committer.threads=2048
     spark.hadoop.fs.s3a.connection.establish.timeout=5000
     spark.hadoop.fs.s3a.connection.maximum=8192
-    spark.hadoop.fs.s3a.connection.ssl.enabled=false
     spark.hadoop.fs.s3a.connection.timeout=200000
     spark.hadoop.fs.s3a.fast.upload.active.blocks=2048
     spark.hadoop.fs.s3a.fast.upload.buffer=disk
@@ -29,3 +28,17 @@ data:
     spark.hadoop.fs.s3a.socket.recv.buffer=65536
     spark.hadoop.fs.s3a.socket.send.buffer=65536
     spark.hadoop.fs.s3a.threads.max=2048
+    {{- if .Values.secrets.keystoreBase64 }}
+    spark.ssl.historyServer.port={{ .Values.service.internalPort }}
+    spark.ssl.historyServer.enabled=true
+    spark.ssl.historyServer.protocol=TLSv1.2
+    spark.ssl.historyServer.keyStore=/mnt/secrets/keystore.jks
+    spark.ssl.historyServer.keyStorePassword={{ .Values.secrets.keystorePassword }}
+    spark.ssl.historyServer.keyStoreType=JKS
+    {{- end }}
+    {{- if .Values.secrets.truststoreBase64 }}
+    spark.ssl.historyServer.trustStore=/mnt/secrets/truststore.jks
+    spark.ssl.historyServer.trustStorePassword={{ .Values.secrets.truststorePassword }}
+    spark.ssl.historyServer.trustStoreType=JKS
+    {{ end }}
+
