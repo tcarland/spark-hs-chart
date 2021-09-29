@@ -161,7 +161,7 @@ the Java Keytool does not allow for importing private keys.
 
 - Set the keystore and truststore values when deploying the helm chart.
   ```sh
-  keystore_data=$(cat keystore.jks | base64 -w0)
+  keystore_data=$(cat sparkhs.jks | base64 -w0)
   truststore_data=$(cat truststore.jks | base64 -w0)
   keystore_passwd="mykeypass"
   truststore_passwd="mytrustpass"
