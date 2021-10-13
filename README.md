@@ -161,8 +161,8 @@ the Java Keytool does not allow for importing private keys.
 
 - Set the keystore and truststore values when deploying the helm chart.
   ```sh
-  keystore_data=$(cat sparkhs.jks | base64 -w0)
-  truststore_data=$(cat truststore.jks | base64 -w0)
+  cat sparkhs.jks | base64 -w0 > sparkhs.b64
+  cat truststore.jks | base64 -w0 > truststore.b64
   keystore_passwd="mykeypass"
   truststore_passwd="mytrustpass"
   ```
@@ -181,7 +181,7 @@ the Java Keytool does not allow for importing private keys.
   or a more complete version of the install command:
   ```
   helm install --create-namespace --set s3endpoint=${S3_ENDPOINT},s3accessKey=${S3_ACCESS_KEY},s3secretKey=${S3_SECRET_KEY},s3logDirectory=s3a://spark/spark-logs,service.type=LoadBalancer,secrets.keystorePassword=$keystore_passwd,secrets.truststorePassword=$truststore_passwd \
-  --set-file secrets.keystoreBase64=keystore.b64 --set-file secrets.truststoreBase64=truststore.b64 \
+  --set-file secrets.keystoreBase64=sparkhs.b64 --set-file secrets.truststoreBase64=truststore.b64 \
   --namespace spark spark-history-server spark-hs-chart/spark-hs
   ```
 
