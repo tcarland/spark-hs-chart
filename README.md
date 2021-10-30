@@ -59,7 +59,7 @@ helm install --create-namespace --set \
 s3endpoint=${S3_ENDPOINT},\
 s3accessKey=${S3_ACCESS_KEY},\
 s3secretKey=${S3_SECRET_KEY},\
-s3logDirectory=s3a://spark/spark-logs,service.type=LoadBalancer \
+s3logDirectory=s3a://spark/spark-logs,\
 service.type=LoadBalancer \
 --namespace spark \
 spark-hs .
