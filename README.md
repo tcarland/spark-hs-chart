@@ -14,14 +14,15 @@ can be customized by adjusting the values file.
 
 |     Option     | Description |
 | -------------- | ----------- |
-|  s3endpoint    | The S3 Endpoint URL, eg. *http://minio-svc:9000* |
-| s3logDirectory | The path to s3 bucket, eg. s3a://spark/spark-logs |
+|  s3endpoint    | The S3 Endpoint URL   `https://minio.minio.svc` |
+| s3logDirectory | The path to s3 bucket `s3a://spark/spark-logs` |
 |  s3accessKey   | The S3 Access Key |
 |  s3secretKey   | The S3 Secret Key |
 
-- *s3endpoint* in the format of `http://minio-svc:9000`
+- *s3endpoint* in the format of `https://minio.minio.svc.cluster.local:443`
 - *s3logDirectory defines the bucket path, which should be a path at 
   least one level below the root. ie. `s3a://spark/spark-logs`
+- Additional values for TLS is described in this [section](#configuring-tls)
 
 <br>
 
@@ -104,28 +105,16 @@ export NODE_IP=$(kubectl get nodes --namespace spark -o jsonpath="{.items[0].sta
 echo https://$NODE_IP:$NODE_PORT
 ```
 
----
 
-## Using ArgoCD to deploy a helm chart
+## Configuring TLS
 
-An Argo *Application* yaml as in *argo/spark-hs-argo.yaml* which defines
-the required chart values. The argo app sets secrets through environment vars 
-which shold be set prior to deploying. The yaml provided expects *S3_ENDPOINT*, 
-*S3_ACCESS_KEY*, and *S3_SECRET_KEY* to already be configured.
-
-To deploy to ArgoCD, parse the yaml through `envsubst` and send to `kubectl create`. 
+If exposing the HistoryService via TLS, certificates should have the 
+CommonName as the exposed FQDN with the kubernetes internal service 
+names listed as the SubjectAlternateName (SAN) such as the following
+example.
 ```
-  export S3_ENDPOINT="https://minio.mydomain.internal:9000"
-  export S3_ACCESS_KEY="myaccesskey"
-  export S3_SECRET_KEY="mysecretkey"
-  cat argo/spark-hs-argo.yaml | envsubst | k create -f -
+DNS:spark-hs.spark.svc.cluster.local,DNS:*.spark.svc.cluster.local,DNS:spark-hs.spark,DNS:spark-hs.spark.svc
 ```
-
-
-## TLS 
-
-Certificate should have the service names listed as the SAN
-`DNS:spark-hs.spark.svc.cluster.local,DNS:*.spark.svc.cluster.local,DNS:spark-hs.spark,DNS:spark-hs.spark.svc`
 
 Creating a Java Keystore involves first having a PKCS#12 formatted key pair, as 
 the Java Keytool does not allow for importing private keys.
@@ -155,8 +144,7 @@ the Java Keytool does not allow for importing private keys.
 
 - Add the CA Certificate to the truststore
   ```sh
-  keytool -importcert -alias rootca \
-    -keystore truststore.jks -file ca.crt
+  keytool -importcert -alias rootca -keystore truststore.jks -file ca.crt
   ```
 
 - Set the keystore and truststore values when deploying the helm chart.
@@ -167,38 +155,74 @@ the Java Keytool does not allow for importing private keys.
   truststore_passwd="mytrustpass"
   ```
 
-  Note that the base64 versions of the keystore and truststore 
-  exceed the shells maximum arguments length, so we pass those 
-  in via the helm `--set-file` option.
+Note that the base64 versions of a keystore and truststore exceed 
+the shells maximum string length for a variable, so we pass those 
+in via the helm `--set-file` option. Accordingly, we create a *slim* 
+truststore containing only the CA Certs necessary rather than
+using a fully loaded truststore (such as *jre/lib/security/cacerts*)
+```sh
+helm install [...] --set \
+keystoreBase64=sparkhs.b64,\
+keystorePassword=$keystore_passwd,\
+truststoreBase64=truststore.b64,\
+trustStorePassword=$truststore_passwd
+```
 
-  helm install [...] --set \
-  keystoreBase64=$keystore_data,\
-  keystorePassword=$keystore_passwd,\
-  truststoreBase64=$truststore_data,\
-  trustStorePassword=$truststore_passwd
-  ```
+or a more complete version of the install command:
+```sh
+helm install --create-namespace --set \
+s3endpoint=${S3_ENDPOINT},\
+s3accessKey=${S3_ACCESS_KEY},\
+s3secretKey=${S3_SECRET_KEY},\
+s3logDirectory=s3a://spark/spark-logs,\
+service.type=LoadBalancer,\
+secrets.keystorePassword=$keystore_passwd,\
+secrets.truststorePassword=$truststore_passwd \
+--set-file secrets.keystoreBase64=sparkhs.b64 \
+--set-file secrets.truststoreBase64=truststore.b64 \
+--namespace spark \
+spark-history-server spark-hs-chart/spark-hs
+```
 
-  or a more complete version of the install command:
-  ```
-  helm install --create-namespace --set s3endpoint=${S3_ENDPOINT},s3accessKey=${S3_ACCESS_KEY},s3secretKey=${S3_SECRET_KEY},s3logDirectory=s3a://spark/spark-logs,service.type=LoadBalancer,secrets.keystorePassword=$keystore_passwd,secrets.truststorePassword=$truststore_passwd \
-  --set-file secrets.keystoreBase64=sparkhs.b64 --set-file secrets.truststoreBase64=truststore.b64 \
-  --namespace spark spark-history-server spark-hs-chart/spark-hs
-  ```
+---
 
-### TLS/SSL Spark Configuration 
+## Using ArgoCD to deploy a helm chart
+
+An Argo *Application* yaml as in *argo/spark-hs-argo.yaml* which defines
+the required chart values. The argo app sets secrets through environment vars 
+which shold be set prior to deploying. The yaml provided expects *S3_ENDPOINT*, 
+*S3_ACCESS_KEY*, and *S3_SECRET_KEY* to already be configured.
+
+To deploy to ArgoCD, parse the yaml through `envsubst` and send to `kubectl create`. 
+```
+  export S3_ENDPOINT="https://minio.mydomain.internal:443"
+  export S3_ACCESS_KEY="myaccesskey"
+  export S3_SECRET_KEY="mysecretkey"
+  cat argo/spark-hs-argo.yaml | envsubst | k create -f -
+```
+
+<br>
+
+---
+
+<br>
+
+## TLS/SSL Spark Configuration Notes
+
+Details on Spark TLS Configuration options.
 
 - `spark.ssl.<ns>` : Settings for a given sub-component
 
-Where <ns> could be:
+Where `<ns>` could be:
 - `spark.ssl.ui`   : Spark application WebUI
 - `spark.ssl.standalone`
 - `spark.ssl.historyServer`
 
 Spark configuration settings to be added to the ConfigMap
-```
+```ini
     spark.ssl.historyServer.enabled=true
     spark.ssl.historyServer.protocol=TLSv1.2
-    spark.ssl.historyServer.port={{ .Values.service.externalPort }}
+    spark.ssl.historyServer.port=18080
     spark.ssl.historyServer.keyStore=/mnt/secrets/keystore.jks
     spark.ssl.historyServer.keyStorePassword={{ .Values.secrets.keystorePassword }}
     spark.ssl.historyServer.keyStoreType=JKS
@@ -207,15 +231,15 @@ Spark configuration settings to be added to the ConfigMap
     spark.ssl.historyServer.trustStoreType=JKS
 ```
 
-Creatng a Secret manually for a Keystore and Truststore
-```
+Creating a Secret manually for a Keystore and Truststore
+```sh
 keystore="$1"
 truststore="$2"
 
 kubectl create secret generic spark-keystore \
   --namespace spark
-  --from-file=keystore.jks=${keystore} \
-  --from-file=truststore.jks=${truststore} \
+  --from-file=keystore.jks=keystore.b64 \
+  --from-file=truststore.jks=truststore.b64 \
   --dry-run=client -o yaml > secrets.yaml
 ```
 
