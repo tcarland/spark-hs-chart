@@ -53,19 +53,21 @@ for example:
 $ helm install -f callisto-values.yaml --namespace spark spark-hs .
 ```
 
-Alternatively, install via helm command-line.
+Alternative install via helm command-line.
 ```
 helm install --create-namespace --set \
 s3endpoint=${S3_ENDPOINT},\
 s3accessKey=${S3_ACCESS_KEY},\
 s3secretKey=${S3_SECRET_KEY},\
 s3logDirectory=s3a://spark/spark-logs,\
-service.type=LoadBalancer \
+service.type=LoadBalancer\
+image.repository=gcr.io/myproject/spark\
 --namespace spark \
 spark-hs .
 ```
 
-The github also acts as our chart repository.
+The github also acts as our chart repository by using gh_pages served 
+from *github.io*.
 ```
 helm repo add spark-hs-chart https://tcarland.github.io/spark-hs-chart/
 helm install spark-history-server spark-hs-chart/spark-hs \
