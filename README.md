@@ -134,9 +134,14 @@ the Java Keytool does not allow for importing private keys.
   -destkeystore keystore.jks -srckeystore sparkhs.pfx -srcstoretype PKCS12
   ```
 
-- Create the Truststore
+Due to size limitiations, we create a truststore containing *only* the 
+certificates needed rather than copy the existing Java cacerts file. The
+truststore is needed for all TLS Clients.
+
+- Create and/or add the CA Certificate to the truststore. This will prompt for 
+  a truststore password.
   ```sh
-  cp $JAVA_HOME/jre/lib/security/cacerts ./truststore.jks
+  keytool -importcert -alias rootca -keystore truststore.jks -file ca.crt
   ```
 
 - Change the password of a truststore
@@ -144,15 +149,10 @@ the Java Keytool does not allow for importing private keys.
   keytool -storepasswd -keystore truststore.jks
   ```
 
-- Add the CA Certificate to the truststore
-  ```sh
-  keytool -importcert -alias rootca -keystore truststore.jks -file ca.crt
-  ```
-
 - Set the keystore and truststore values when deploying the helm chart.
   ```sh
-  cat sparkhs.jks | base64 -w0 > sparkhs.b64
-  cat truststore.jks | base64 -w0 > truststore.b64
+  base64 keystore.jks > keystore.b64
+  base64 truststore.jks > truststore.b64
   keystore_passwd="mykeypass"
   truststore_passwd="mytrustpass"
   ```
@@ -213,9 +213,11 @@ To deploy to ArgoCD, parse the yaml through `envsubst` and send to `kubectl crea
 
 Details on Spark TLS Configuration options.
 
+- `spark.ssl.<option>` : Sets parameters for all components
+
 - `spark.ssl.<ns>` : Settings for a given sub-component
 
-Where `<ns>` could be:
+Where `<ns>` is the subcomponent:
 - `spark.ssl.ui`   : Spark application WebUI
 - `spark.ssl.standalone`
 - `spark.ssl.historyServer`
@@ -233,7 +235,8 @@ Spark configuration settings to be added to the ConfigMap
     spark.ssl.historyServer.trustStoreType=JKS
 ```
 
-Creating a Secret manually for a Keystore and Truststore
+Creating a Secret manually for a Keystore and Truststore. Note that use 
+of `--from-file` already base64 encodes the provided files.
 ```sh
 keystore="$1"
 truststore="$2"
