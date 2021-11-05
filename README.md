@@ -150,9 +150,11 @@ truststore is needed for all TLS Clients.
   ```
 
 - Set the keystore and truststore values when deploying the helm chart.
+  Helm also prefers unwrapped base64 in the chart when creating the yaml 
+  entry, thus the need for `-w0` to `base64`.
   ```sh
-  base64 keystore.jks > keystore.b64
-  base64 truststore.jks > truststore.b64
+  base64 -w0 keystore.jks > keystore.b64
+  base64 -w0 truststore.jks > truststore.b64
   keystore_passwd="mykeypass"
   truststore_passwd="mytrustpass"
   ```
@@ -243,8 +245,8 @@ truststore="$2"
 
 kubectl create secret generic spark-keystore \
   --namespace spark
-  --from-file=keystore.jks=keystore.b64 \
-  --from-file=truststore.jks=truststore.b64 \
+  --from-file=keystore.jks=keystore.jks \
+  --from-file=truststore.jks=truststore.jks \
   --dry-run=client -o yaml > secrets.yaml
 ```
 
