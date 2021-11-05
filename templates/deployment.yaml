@@ -40,7 +40,8 @@ spec:
                       -Dspark.hadoop.fs.s3a.endpoint={{ .Values.s3endpoint }} \
                       -Dspark.hadoop.fs.s3a.access.key={{ .Values.s3accessKey }} \
                       -Dspark.hadoop.fs.s3a.secret.key={{ .Values.s3secretKey }} \
-                      -Dspark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem"
+                      -Dspark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem \
+                      -Dcom.amazonaws.sdk.disableCertChecking={{ .Values.s3disableCertChecking }}"
             - name: SPARK_CONF_DIR
               value: /opt/spark/conf
           volumeMounts:
