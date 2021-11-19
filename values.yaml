@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   repository: tarland/spark
-  tag: rhea-v3.2.0-2110.29
+  tag: v3.2.0-dione-2111.07
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
