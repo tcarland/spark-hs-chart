@@ -1,7 +1,7 @@
 Spark History Server Helm Chart
 ===============================
 
- A helm chart for deploying the Spark History Server to Kubernetes 
+A helm chart for deploying the Spark History Server to Kubernetes 
 using S3 Object Storage for Spark EventLogs. Some of the existing 
 charts do not account for the S3 requirements.
 
@@ -31,8 +31,8 @@ can be customized by adjusting the values file.
 Config parameters can be added to a custom version of *values.yaml* and 
 passed to helm via `-f myvalues.yaml` or via the `--set` directive.
 
-A service account for spark should be created either ahead of time or set
-*serviceAccount.create* as *true* in the `values.yaml` file.
+A service account for spark is needed and should be created ahead of time 
+or set *serviceAccount.create* as *true* in the `values.yaml` file (default is true).
 ```
   kubectl create namespace spark
   kubectl create serviceaccount spark --namespace spark
@@ -48,7 +48,7 @@ Install by a values file
 $ helm install -f <myvalues.yaml> --namespace <ns> <release-name> <path_to_chart>
 ```
 
-for example:
+For example:
 ```
 $ helm install -f callisto-values.yaml --namespace spark spark-hs .
 ```
@@ -60,8 +60,8 @@ s3endpoint=${S3_ENDPOINT},\
 s3accessKey=${S3_ACCESS_KEY},\
 s3secretKey=${S3_SECRET_KEY},\
 s3logDirectory=s3a://spark/spark-logs,\
-service.type=LoadBalancer\
-image.repository=gcr.io/myproject/spark\
+service.type=LoadBalancer,\
+image.repository=gcr.io/myproject/spark \
 --namespace spark \
 spark-hs .
 ```
