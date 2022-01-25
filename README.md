@@ -107,6 +107,10 @@ export NODE_IP=$(kubectl get nodes --namespace spark -o jsonpath="{.items[0].sta
 echo https://$NODE_IP:$NODE_PORT
 ```
 
+<br>
+
+---
+
 
 ## Configuring TLS
 
@@ -187,6 +191,8 @@ secrets.truststorePassword=$truststore_passwd \
 --namespace spark \
 spark-history-server spark-hs-chart/spark-hs
 ```
+
+<br>
 
 ---
 
