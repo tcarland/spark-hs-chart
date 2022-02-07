@@ -15,7 +15,7 @@ can be customized by adjusting the values file.
 |     Option     | Description |
 | -------------- | ----------- |
 |  s3endpoint    | The S3 Endpoint URL   `https://minio.minio.svc` |
-| s3logDirectory | The path to s3 bucket `s3a://spark/spark-logs` |
+| s3logDirectory | The path to S3 bucket `s3a://spark/spark-logs` |
 |  s3accessKey   | The S3 Access Key |
 |  s3secretKey   | The S3 Secret Key |
 
@@ -28,11 +28,12 @@ can be customized by adjusting the values file.
 
 ## Install the Helm Chart
 
-Config parameters can be added to a custom version of *values.yaml* and 
-passed to helm via `-f myvalues.yaml` or via the `--set` directive.
+Config parameters can be added to a custom version of *values.yaml* 
+and passed to helm via `-f myvalues.yaml` or via the `--set` directive.
 
-A service account for spark is needed and should be created ahead of time 
-or set *serviceAccount.create* as *true* in the `values.yaml` file (default is true).
+A service account for spark is needed and should be created ahead of 
+time or set *serviceAccount.create* as *true* in the `values.yaml` 
+file (default is true).
 ```
   kubectl create namespace spark
   kubectl create serviceaccount spark --namespace spark
@@ -55,23 +56,22 @@ $ helm install -f callisto-values.yaml --namespace spark spark-hs .
 
 Alternative install via helm command-line.
 ```
-helm install --create-namespace --set \
-s3endpoint=${S3_ENDPOINT},\
-s3accessKey=${S3_ACCESS_KEY},\
-s3secretKey=${S3_SECRET_KEY},\
-s3logDirectory=s3a://spark/spark-logs,\
-service.type=LoadBalancer,\
-image.repository=gcr.io/myproject/spark \
---namespace spark \
-spark-hs .
+helm install spark-hs . \
+  --create-namespace --namespace spark 
+  --set s3endpoint=${S3_ENDPOINT} \
+  --set s3accessKey=${S3_ACCESS_KEY} \
+  --set s3secretKey=${S3_SECRET_KEY} \
+  --set s3logDirectory=s3a://spark/spark-logs \
+  --set service.type=LoadBalancer \
+  --set image.repository=gcr.io/myproject/spark 
 ```
 
-The github also acts as our chart repository by using gh_pages served 
-from *github.io*.
+The github also acts as our chart repository by using gh_pages 
+served from *github.io*.
 ```
 helm repo add spark-hs-chart https://tcarland.github.io/spark-hs-chart/
 helm install spark-history-server spark-hs-chart/spark-hs \
- --create-namespace --set [options] --namespace spark
+ --create-namespace --set [option] --namespace spark
 ```
 
 ## Uninstall Chart
@@ -81,11 +81,10 @@ Simply use helm to remove the deployment
 helm uninstall --namespace spark spark-hs
 ```
 
-
 ## Accessing the UI
 
-By default the Service is using *ClusterIP*. Typically, we add an ingress 
-gateway and use *LoadBalancer*. 
+By default the Service is using *ClusterIP*. Typically, we add an 
+ingress gateway and use *LoadBalancer*. 
 
 A quick validation would be to port-forward the history server port.
 ```bash
@@ -100,7 +99,7 @@ HS_PORT=$( kubectl get service $relname -n $ns -o=json | jq .spec.ports[0].port 
 kubectl port-forward $POD_NAME $HS_PORT --namespace $ns &
 ```
 
-If the service type was set to NodePort, acquire the Application URL
+If the service type was set to NodePort, acquire the Application URL.
 ```bash
 export NODE_PORT=$(kubectl get --namespace spark -o jsonpath="{.spec.ports[0].nodePort}" services spark-hs)
 export NODE_IP=$(kubectl get nodes --namespace spark -o jsonpath="{.items[0].status.addresses[0].address}")
@@ -110,7 +109,6 @@ echo https://$NODE_IP:$NODE_PORT
 <br>
 
 ---
-
 
 ## Configuring TLS
 
@@ -122,8 +120,8 @@ example.
 DNS:spark-hs.spark.svc.cluster.local,DNS:*.spark.svc.cluster.local,DNS:spark-hs.spark,DNS:spark-hs.spark.svc
 ```
 
-Creating a Java Keystore involves first having a PKCS#12 formatted key pair, as 
-the Java Keytool does not allow for importing private keys.
+Creating a Java Keystore involves first having a PKCS#12 formatted 
+key-pair, as the Java Keytool does not allow for importing private keys.
 
 - Create a PKCS#12 container from a key pair.
   ```sh
@@ -142,8 +140,8 @@ Due to size limitiations, we create a truststore containing *only* the
 certificates needed rather than copy the existing Java cacerts file. The
 truststore is needed for all TLS Clients.
 
-- Create and/or add the CA Certificate to the truststore. This will prompt for 
-  a truststore password.
+- Create and/or add the CA Certificate to the truststore. This will prompt 
+  for a truststore password.
   ```sh
   keytool -importcert -alias rootca -keystore truststore.jks -file ca.crt
   ```
@@ -178,18 +176,17 @@ trustStorePassword=$truststore_passwd
 
 or a more complete version of the install command:
 ```sh
-helm install --create-namespace --set \
-s3endpoint=${S3_ENDPOINT},\
-s3accessKey=${S3_ACCESS_KEY},\
-s3secretKey=${S3_SECRET_KEY},\
-s3logDirectory=s3a://spark/spark-logs,\
-service.type=LoadBalancer,\
-secrets.keystorePassword=$keystore_passwd,\
-secrets.truststorePassword=$truststore_passwd \
---set-file secrets.keystoreBase64=sparkhs.b64 \
---set-file secrets.truststoreBase64=truststore.b64 \
---namespace spark \
-spark-history-server spark-hs-chart/spark-hs
+helm install spark-history-server spark-hs-chart/spark-hs \
+  --namespace spark --create-namespace \
+  --set s3endpoint=${S3_ENDPOINT} \
+  --set s3accessKey=${S3_ACCESS_KEY} \
+  --set s3secretKey=${S3_SECRET_KEY} \
+  --set s3logDirectory=s3a://spark/spark-logs \
+  --set service.type=LoadBalancer \
+  --set secrets.keystorePassword=$keystore_passwd \
+  --set secrets.truststorePassword=$truststore_passwd \
+  --set-file secrets.keystoreBase64=sparkhs.b64 \
+  --set-file secrets.truststoreBase64=truststore.b64 
 ```
 
 <br>
@@ -199,9 +196,9 @@ spark-history-server spark-hs-chart/spark-hs
 ## Using ArgoCD to deploy a helm chart
 
 An Argo *Application* yaml as in *argo/spark-hs-argo.yaml* which defines
-the required chart values. The argo app sets secrets through environment vars 
-which shold be set prior to deploying. The yaml provided expects *S3_ENDPOINT*, 
-*S3_ACCESS_KEY*, and *S3_SECRET_KEY* to already be configured.
+the required chart values. The argo app sets secrets through environment 
+vars which shold be set prior to deploying. The yaml provided expects 
+*S3_ENDPOINT*, *S3_ACCESS_KEY*, and *S3_SECRET_KEY* to already be configured.
 
 To deploy to ArgoCD, parse the yaml through `envsubst` and send to `kubectl create`. 
 ```
