@@ -20,7 +20,7 @@ can be customized by adjusting the values file.
 |  s3secretKey   | The S3 Secret Key |
 
 - *s3endpoint* in the format of `https://minio.minio.svc.cluster.local:443`
-- *s3logDirectory defines the bucket path, which should be a path at 
+- *s3logDirectory* defines the bucket path, which should be a path at 
   least one level below the root. ie. `s3a://spark/spark-logs`
 - Additional values for TLS is described in this [section](#configuring-tls)
 
@@ -161,11 +161,11 @@ truststore is needed for all TLS Clients.
   truststore_passwd="mytrustpass"
   ```
 
-Note that the base64 versions of a keystore and truststore exceed 
-the shells maximum string length for a variable, so we pass those 
-in via the helm `--set-file` option. Accordingly, we create a *slim* 
-truststore containing only the CA Certs necessary rather than
-using a fully loaded truststore (such as *jre/lib/security/cacerts*)
+Note that the base64 versions of a keystore and truststore exceed the
+shells maximum string length for a variable, so we pass those in via
+the helm `--set-file` option. Accordingly, we create a *slim* truststore
+containing only the CA Certs necessary rather than using a fully loaded 
+truststore (such as *jre/lib/security/cacerts*)
 ```sh
 helm install [...] --set \
 keystoreBase64=sparkhs.b64,\
