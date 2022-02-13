@@ -3,7 +3,7 @@
 replicaCount: 1
 
 image:
-  repository: tarland/spark
+  repository: quay.io/tcarland/spark
   tag: v3.2.1-callisto-2202.06
   pullPolicy: IfNotPresent
 
