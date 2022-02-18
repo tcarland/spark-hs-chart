@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- serviceaccount.yaml
+- service.yaml
+- deployment.yaml
+
+configMapGenerator:
+- name: spark-parameters
+  envs: 
+  - params.env
+- name: spark-hs-cm
+  files:
+  - spark-defaults.conf
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+secretGenerator:
+- name: spark-hs-secrets
+  envs: 
+  - secrets.env
+
+commonLabels:
+  kustomize.component: spark-hs
