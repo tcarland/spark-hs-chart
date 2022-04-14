@@ -3,7 +3,8 @@ Spark History Server Helm Chart
 
 A helm chart for deploying the Spark History Server to Kubernetes 
 using S3 Object Storage for Spark EventLogs. Some of the existing 
-charts do not account for the S3 requirements.
+charts do not account for the S3 requirements. This was created 
+for Spark3 using S3 for the history logs.
 
 <br>
 
