@@ -3,7 +3,17 @@ entries:
   spark-hs:
   - apiVersion: v2
     appVersion: 3.2.1
-    created: "2022-05-02T07:52:39.251482965-07:00"
+    created: "2022-05-11T07:52:17.705198828-07:00"
+    description: A Helm Chart for the Spark History Server
+    digest: b7f43833860ff6baf1a97a8bdbdfbf8697ca43e0b10f65b05dbdf5b170ee1814
+    name: spark-hs
+    type: application
+    urls:
+    - https://tcarland.github.io/spark-hs-chart/spark-hs-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v2
+    appVersion: 3.2.1
+    created: "2022-05-11T07:52:17.704679046-07:00"
     description: A Helm Chart for the Spark History Server
     digest: d805be5eadb49d600860ca88a94fb7b8fdc6ef2469e11812df2fd5290c2a419d
     name: spark-hs
@@ -13,7 +23,7 @@ entries:
     version: 0.4.9
   - apiVersion: v2
     appVersion: 3.2.1
-    created: "2022-05-02T07:52:39.250509217-07:00"
+    created: "2022-05-11T07:52:17.704200152-07:00"
     description: A Helm Chart for the Spark History Server
     digest: bc4f475fd08a378367400a05595f17990a1587f96b2749a88126fb4e9ab84b4a
     name: spark-hs
@@ -23,7 +33,7 @@ entries:
     version: 0.4.8
   - apiVersion: v2
     appVersion: 3.2.1
-    created: "2022-05-02T07:52:39.249455496-07:00"
+    created: "2022-05-11T07:52:17.703687967-07:00"
     description: A Helm Chart for the Spark History Server
     digest: 37efb4394f16df66212ee1d10a6ad467a0c858d811162050a3b0ece67e1a3846
     name: spark-hs
@@ -33,7 +43,7 @@ entries:
     version: 0.4.7
   - apiVersion: v2
     appVersion: 3.2.1
-    created: "2022-05-02T07:52:39.248444989-07:00"
+    created: "2022-05-11T07:52:17.703168858-07:00"
     description: A Helm Chart for the Spark History Server
     digest: 59bd3c774098727f97b43ba4eef52e678a6f66d3956842c6cfc821507c39ead3
     name: spark-hs
@@ -41,14 +51,4 @@ entries:
     urls:
     - https://tcarland.github.io/spark-hs-chart/spark-hs-0.4.6.tgz
     version: 0.4.6
-  - apiVersion: v2
-    appVersion: 3.2.1
-    created: "2022-05-02T07:52:39.247435559-07:00"
-    description: A Helm Chart for the Spark History Server
-    digest: dc949c0ed1ae7dec0b63818256c3557baa9eafb9903a7a3d33422dc291726dbe
-    name: spark-hs
-    type: application
-    urls:
-    - https://tcarland.github.io/spark-hs-chart/spark-hs-0.4.5.tgz
-    version: 0.4.5
-generated: "2022-05-02T07:52:39.246136399-07:00"
+generated: "2022-05-11T07:52:17.702459076-07:00"
