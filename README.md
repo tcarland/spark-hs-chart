@@ -107,6 +107,31 @@ export NODE_IP=$(kubectl get nodes --namespace spark -o jsonpath="{.items[0].sta
 echo https://$NODE_IP:$NODE_PORT
 ```
 
+## Building a Spark Image
+￼
+￼The Apache Spark distribution provides a Dockerfile and an image build 
+￼tool for generating container images. Typically a binary package 
+￼dowloaded from spark.apache.org will work fine.  The spark images 
+￼referenced by this repository use a Spark3 package with Hadoop3 libs 
+￼included, but this is generally chosen to match ones environment.
+￼
+￼Custom JARs can be added to $SPARK_HOME/jars prior to building the 
+￼image, but the jars should be tested to ensure there are no dependency 
+￼collisions that would require shading resources.
+￼
+￼The dockerfile used by the image-tool is located at 
+￼*$SPARK_HOME/kubernetes/dockerfiles/spark/Dockerfile*
+￼
+￼The typical image build process:
+￼```bash
+￼export SPARK_HOME=/opt/spark
+￼cd $SPARK_HOME
+￼./bin/docker-image-tool.sh -r quay.io/myacct -t 3.2.1-myrelease build
+￼[...]
+￼Successfully build f07cd00df877
+￼Successfully tagged quay.io/myacct/spark:3.2.1-myrelease
+￼```
+
 <br>
 
 ---
