@@ -109,28 +109,32 @@ echo https://$NODE_IP:$NODE_PORT
 
 ## Building a Spark Image
 ￼
-￼The Apache Spark distribution provides a Dockerfile and an image build 
-￼tool for generating container images. Typically a binary package 
-￼dowloaded from spark.apache.org will work fine.  The spark images 
-￼referenced by this repository use a Spark3 package with Hadoop3 libs 
-￼included, but this is generally chosen to match ones environment.
-￼
-￼Custom JARs can be added to $SPARK_HOME/jars prior to building the 
-￼image, but the jars should be tested to ensure there are no dependency 
-￼collisions that would require shading resources.
-￼
-￼The dockerfile used by the image-tool is located at 
-￼*$SPARK_HOME/kubernetes/dockerfiles/spark/Dockerfile*
-￼
-￼The typical image build process:
-￼```bash
-￼export SPARK_HOME=/opt/spark
-￼cd $SPARK_HOME
-￼./bin/docker-image-tool.sh -r quay.io/myacct -t 3.2.1-myrelease build
-￼[...]
-￼Successfully build f07cd00df877
-￼Successfully tagged quay.io/myacct/spark:3.2.1-myrelease
-￼```
+The Apache Spark distribution provides a Dockerfile and an image build 
+tool for generating container images. Typically a binary package 
+dowloaded from spark.apache.org will work fine.  The spark images 
+referenced by this repository use a Spark3 package with Hadoop3 libs 
+included, but this is generally chosen to match ones environment.
+
+Custom JARs can be added to $SPARK_HOME/jars prior to building the 
+image, but the jars should be tested to ensure there are no dependency 
+collisions that would require shading resources.
+
+The dockerfile used by the image-tool is located at 
+*$SPARK_HOME/kubernetes/dockerfiles/spark/Dockerfile*
+
+The typical image build process:
+```bash
+export SPARK_HOME=/opt/spark
+cd $SPARK_HOME
+./bin/docker-image-tool.sh -r quay.io/myacct -t 3.2.1-myrelease build
+[...]
+Successfully build f07cd00df877
+Successfully tagged quay.io/myacct/spark:3.2.1-myrelease
+```
+
+The images used by the chart typically include Hive3 dependencies and 
+more recently support Java 11 with Hive 3.1.3. Hive versions 3.1.2 and 
+less do not support Spark and Java 11 completely and must use Java 8 instead. 
 
 <br>
 
