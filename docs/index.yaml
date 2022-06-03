@@ -3,7 +3,17 @@ entries:
   spark-hs:
   - apiVersion: v2
     appVersion: 3.2.1
-    created: "2022-05-20T06:40:27.470778526-07:00"
+    created: "2022-06-03T07:46:57.368283265-07:00"
+    description: A Helm Chart for the Spark History Server
+    digest: beaf4e711bfefd135ee4538cb388d08d26d9f203ecd815d4180161505bf53e9c
+    name: spark-hs
+    type: application
+    urls:
+    - https://tcarland.github.io/spark-hs-chart/spark-hs-0.6.1.tgz
+    version: 0.6.1
+  - apiVersion: v2
+    appVersion: 3.2.1
+    created: "2022-06-03T07:46:57.367740368-07:00"
     description: A Helm Chart for the Spark History Server
     digest: 25e4303b581d0dbaa01fb6e88dfe7f5e0d81b4cd4d7468f3b5dce17d46c56e8d
     name: spark-hs
@@ -13,7 +23,7 @@ entries:
     version: 0.5.1
   - apiVersion: v2
     appVersion: 3.2.1
-    created: "2022-05-20T06:40:27.470273794-07:00"
+    created: "2022-06-03T07:46:57.36682717-07:00"
     description: A Helm Chart for the Spark History Server
     digest: b7f43833860ff6baf1a97a8bdbdfbf8697ca43e0b10f65b05dbdf5b170ee1814
     name: spark-hs
@@ -23,7 +33,7 @@ entries:
     version: 0.5.0
   - apiVersion: v2
     appVersion: 3.2.1
-    created: "2022-05-20T06:40:27.46975198-07:00"
+    created: "2022-06-03T07:46:57.365625322-07:00"
     description: A Helm Chart for the Spark History Server
     digest: d805be5eadb49d600860ca88a94fb7b8fdc6ef2469e11812df2fd5290c2a419d
     name: spark-hs
@@ -33,7 +43,7 @@ entries:
     version: 0.4.9
   - apiVersion: v2
     appVersion: 3.2.1
-    created: "2022-05-20T06:40:27.469227946-07:00"
+    created: "2022-06-03T07:46:57.36506864-07:00"
     description: A Helm Chart for the Spark History Server
     digest: bc4f475fd08a378367400a05595f17990a1587f96b2749a88126fb4e9ab84b4a
     name: spark-hs
@@ -41,14 +51,4 @@ entries:
     urls:
     - https://tcarland.github.io/spark-hs-chart/spark-hs-0.4.8.tgz
     version: 0.4.8
-  - apiVersion: v2
-    appVersion: 3.2.1
-    created: "2022-05-20T06:40:27.468120383-07:00"
-    description: A Helm Chart for the Spark History Server
-    digest: 37efb4394f16df66212ee1d10a6ad467a0c858d811162050a3b0ece67e1a3846
-    name: spark-hs
-    type: application
-    urls:
-    - https://tcarland.github.io/spark-hs-chart/spark-hs-0.4.7.tgz
-    version: 0.4.7
-generated: "2022-05-20T06:40:27.466859794-07:00"
+generated: "2022-06-03T07:46:57.364400502-07:00"
