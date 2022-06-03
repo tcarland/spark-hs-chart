@@ -21,8 +21,7 @@ can be customized by adjusting the values file.
 |  s3secretKey   | The S3 Secret Key |
 
 - *s3endpoint* in the format of `https://minio.minio.svc.cluster.local:443`
-- *s3logDirectory* defines the bucket path, which should be a path at 
-  least one level below the root. ie. `s3a://spark/spark-logs`
+- *s3logDirectory* defines the bucket path, which defaults to `s3a://spark/spark-logs`
 - Additional values for TLS is described in this [section](#configuring-tls)
 
 <br>
@@ -34,7 +33,8 @@ and passed to helm via `-f myvalues.yaml` or via the `--set` directive.
 
 A service account for spark is needed and should be created ahead of 
 time or set *serviceAccount.create* as *true* in the `values.yaml` 
-file (default is true).
+file (the default is already `true`). This results in the following
+being applied:
 ```
   kubectl create namespace spark
   kubectl create serviceaccount spark --namespace spark
@@ -48,11 +48,6 @@ file (default is true).
 Install by a values file
 ```
 $ helm install -f <myvalues.yaml> --namespace <ns> <release-name> <path_to_chart>
-```
-
-For example:
-```
-$ helm install -f callisto-values.yaml --namespace spark spark-hs .
 ```
 
 Alternative install via helm command-line.
