@@ -21,8 +21,7 @@ can be customized by adjusting the values file.
 |  s3secretKey   | The S3 Secret Key |
 
 - *s3endpoint* in the format of `https://minio.minio.svc.cluster.local:443`
-- *s3logDirectory* defines the bucket path, which should be a path at 
-  least one level below the root. ie. `s3a://spark/spark-logs`
+- *s3logDirectory* defines the bucket path, which defaults to `s3a://spark/spark-logs`
 - Additional values for TLS is described in this [section](#configuring-tls)
 
 <br>
@@ -34,7 +33,8 @@ and passed to helm via `-f myvalues.yaml` or via the `--set` directive.
 
 A service account for spark is needed and should be created ahead of 
 time or set *serviceAccount.create* as *true* in the `values.yaml` 
-file (default is true).
+file (the default is already `true`). This results in the following
+being applied:
 ```
   kubectl create namespace spark
   kubectl create serviceaccount spark --namespace spark
@@ -48,11 +48,6 @@ file (default is true).
 Install by a values file
 ```
 $ helm install -f <myvalues.yaml> --namespace <ns> <release-name> <path_to_chart>
-```
-
-For example:
-```
-$ helm install -f callisto-values.yaml --namespace spark spark-hs .
 ```
 
 Alternative install via helm command-line.
@@ -109,28 +104,32 @@ echo https://$NODE_IP:$NODE_PORT
 
 ## Building a Spark Image
 ￼
-￼The Apache Spark distribution provides a Dockerfile and an image build 
-￼tool for generating container images. Typically a binary package 
-￼dowloaded from spark.apache.org will work fine.  The spark images 
-￼referenced by this repository use a Spark3 package with Hadoop3 libs 
-￼included, but this is generally chosen to match ones environment.
-￼
-￼Custom JARs can be added to $SPARK_HOME/jars prior to building the 
-￼image, but the jars should be tested to ensure there are no dependency 
-￼collisions that would require shading resources.
-￼
-￼The dockerfile used by the image-tool is located at 
-￼*$SPARK_HOME/kubernetes/dockerfiles/spark/Dockerfile*
-￼
-￼The typical image build process:
-￼```bash
-￼export SPARK_HOME=/opt/spark
-￼cd $SPARK_HOME
-￼./bin/docker-image-tool.sh -r quay.io/myacct -t 3.2.1-myrelease build
-￼[...]
-￼Successfully build f07cd00df877
-￼Successfully tagged quay.io/myacct/spark:3.2.1-myrelease
-￼```
+The Apache Spark distribution provides a Dockerfile and an image build 
+tool for generating container images. Typically a binary package 
+dowloaded from spark.apache.org will work fine.  The spark images 
+referenced by this repository use a Spark3 package with Hadoop3 libs 
+included, but this is generally chosen to match ones environment.
+
+Custom JARs can be added to $SPARK_HOME/jars prior to building the 
+image, but the jars should be tested to ensure there are no dependency 
+collisions that would require shading resources.
+
+The dockerfile used by the image-tool is located at 
+*$SPARK_HOME/kubernetes/dockerfiles/spark/Dockerfile*
+
+The typical image build process:
+```bash
+export SPARK_HOME=/opt/spark
+cd $SPARK_HOME
+./bin/docker-image-tool.sh -r quay.io/myacct -t 3.2.1-myrelease build
+[...]
+Successfully build f07cd00df877
+Successfully tagged quay.io/myacct/spark:3.2.1-myrelease
+```
+
+The images used by the chart typically include Hive3 dependencies and 
+more recently support Java 11 with Hive 3.1.3. Hive versions 3.1.2 and 
+less do not support Spark and Java 11 completely and must use Java 8 instead. 
 
 <br>
 
