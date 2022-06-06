@@ -89,7 +89,7 @@ relname="spark-hs"
 ns="spark"
 
 POD_NAME=$(kubectl get pods -n $ns | grep $relname | awk '{ print $1 }')
-HS_PORT=$( kubectl get service $relname -n $ns -o=json | jq .spec.ports[0].port )
+HS_PORT=$(kubectl get service $relname -n $ns -o=json | jq .spec.ports[0].port)
 
 # port forward
 kubectl port-forward $POD_NAME $HS_PORT --namespace $ns &
