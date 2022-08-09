@@ -104,7 +104,7 @@ echo https://$NODE_IP:$NODE_PORT
 
 ## Building a Spark Image
 ￼
-The Apache Spark distribution provides a Dockerfile and an image build 
+The Apache Spark distribution provides a *Dockerfile* and an image build 
 tool for generating container images. Typically a binary package 
 dowloaded from spark.apache.org will work fine.  The spark images 
 referenced by this repository use a Spark3 package with Hadoop3 libs 
