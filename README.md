@@ -138,8 +138,8 @@ less do not support Spark and Java 11 completely and must use Java 8 instead.
 ## Configuring TLS
 
 If exposing the HistoryService via TLS, certificates should have the 
-CommonName as the exposed FQDN with the kubernetes internal service 
-names listed as the SubjectAlternateName (SAN) such as the following
+*CommonName* as the exposed FQDN with the Kubernetes internal service 
+names listed as the *SubjectAlternateName* (SAN) such as the following
 example.
 ```
 DNS:spark-hs.spark.svc.cluster.local,DNS:*.spark.svc.cluster.local,DNS:spark-hs.spark,DNS:spark-hs.spark.svc
