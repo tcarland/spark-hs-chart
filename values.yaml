@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/tcarland/spark
-  tag: v3.3.1-aegir-2210.28
+  tag: v3.3.1-rhea-2211.20
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -50,8 +50,8 @@ ingress:
 
 resources: {}
   # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
+  #   cpu: 500m
+  #   memory: 512Mi
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
