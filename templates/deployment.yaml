@@ -41,6 +41,11 @@ spec:
                       -Dspark.hadoop.fs.s3a.access.key={{ .Values.s3accessKey }} \
                       -Dspark.hadoop.fs.s3a.secret.key={{ .Values.s3secretKey }} \
                       -Dspark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem \
+                      -Dspark.hadoop.fs.s3a.committer.magic.enabled=true \
+                      -Dspark.hadoop.fs.s3a.path.style.access=true \
+                      -Dspark.hadoop.fs.s3a.committer.staging.abort.pending.uploads=true \
+                      -Dspark.hadoop.fs.s3a.block.size=512M \
+                      -Dspark.hadoop.fs.s3a.committer.staging.conflict-mode=append \
                       -Dcom.amazonaws.sdk.disableCertChecking={{ .Values.s3disableCertChecking }}"
             - name: SPARK_CONF_DIR
               value: /opt/spark/conf
