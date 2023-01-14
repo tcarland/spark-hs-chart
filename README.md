@@ -1,10 +1,10 @@
-Spark History Server Helm Chart
+Spark 3 History Server Helm Chart
 ===============================
 
 A helm chart for deploying the Spark History Server to Kubernetes 
-using S3 Object Storage for Spark EventLogs. Some of the existing 
-charts do not account for the S3 requirements. This was created 
-for Spark3 using S3 for the history logs.
+using S3 Object Storage for the Spark Event Logs. Many of the existing 
+charts do not account for the S3 requirements. This chart was created 
+specifically for Spark 3 using S3 for the history logs.
 
 <br>
 
@@ -36,13 +36,13 @@ time or set *serviceAccount.create* as *true* in the `values.yaml`
 file (the default is already `true`). This results in the following
 being applied:
 ```
-  kubectl create namespace spark
-  kubectl create serviceaccount spark --namespace spark
+kubectl create namespace spark
+kubectl create serviceaccount spark --namespace spark
 
-  kubectl create clusterrolebinding spark-rolebinding \
-    --clusterrole=edit \
-    --serviceaccount=spark:spark \
-    --namespace=spark
+kubectl create clusterrolebinding spark-rolebinding \
+  --clusterrole=edit \
+  --serviceaccount=spark:spark \
+  --namespace=spark
 ```
 
 Install by a values file
