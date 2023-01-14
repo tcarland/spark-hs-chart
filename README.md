@@ -121,15 +121,23 @@ The typical image build process:
 ```bash
 export SPARK_HOME=/opt/spark
 cd $SPARK_HOME
-./bin/docker-image-tool.sh -r quay.io/myacct -t 3.3.1-myrelease build
+./bin/docker-image-tool.sh -r quay.io/myacct -t 3.3.1_2.12-myrelease build
 [...]
 Successfully build f07cd00df877
 Successfully tagged quay.io/myacct/spark:3.3.1-myrelease
 ```
 
+### Java 11 vs Java 8
 The images used by the chart typically include Hive3 dependencies and 
 more recently support Java 11 with Hive 3.1.3. Hive versions 3.1.2 and 
 less do not support Spark and Java 11 completely and must use Java 8 instead. 
+
+### Scala Versions
+In the context of the history server, the underlying Scala version 
+does not really matter, though Spark 3 can support either 2.12 or 2.13.
+It can be useful to tag the image accordingly as this version is 
+key when it comes to other 3rd party Scala dependencies such as Iceberg 
+or Hudi. 
 
 <br>
 
