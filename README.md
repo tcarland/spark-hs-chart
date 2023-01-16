@@ -124,7 +124,7 @@ cd $SPARK_HOME
 ./bin/docker-image-tool.sh -r quay.io/myacct -t 3.3.1_2.12-myrelease build
 [...]
 Successfully build f07cd00df877
-Successfully tagged quay.io/myacct/spark:3.3.1-myrelease
+Successfully tagged quay.io/myacct/spark:3.3.1_2.12-myrelease
 ```
 
 ### Java 11 vs Java 8
@@ -137,7 +137,8 @@ In the context of the history server, the underlying Scala version
 does not really matter, though Spark 3 can support either 2.12 or 2.13.
 It can be useful to tag the image accordingly as this version is 
 key when it comes to other 3rd party Scala dependencies such as Iceberg 
-or Hudi. 
+or Hudi. Unfortunately, some 3rd party projects have not fully adopted
+Scala 2.13 yet (eg. Hudi, Flink), so the default images are still Scala 2.12.
 
 <br>
 
