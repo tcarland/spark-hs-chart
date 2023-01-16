@@ -1,10 +1,10 @@
-Spark History Server Helm Chart
+Spark 3 History Server Helm Chart
 ===============================
 
 A helm chart for deploying the Spark History Server to Kubernetes 
-using S3 Object Storage for Spark EventLogs. Some of the existing 
-charts do not account for the S3 requirements. This was created 
-for Spark3 using S3 for the history logs.
+using S3 Object Storage for the Spark Event Logs. Many of the existing 
+charts do not account for the S3 requirements. This chart was created 
+specifically for Spark 3 using S3 for the history logs.
 
 <br>
 
@@ -36,13 +36,13 @@ time or set *serviceAccount.create* as *true* in the `values.yaml`
 file (the default is already `true`). This results in the following
 being applied:
 ```
-  kubectl create namespace spark
-  kubectl create serviceaccount spark --namespace spark
+kubectl create namespace spark
+kubectl create serviceaccount spark --namespace spark
 
-  kubectl create clusterrolebinding spark-rolebinding \
-    --clusterrole=edit \
-    --serviceaccount=spark:spark \
-    --namespace=spark
+kubectl create clusterrolebinding spark-rolebinding \
+  --clusterrole=edit \
+  --serviceaccount=spark:spark \
+  --namespace=spark
 ```
 
 Install by a values file
@@ -121,15 +121,24 @@ The typical image build process:
 ```bash
 export SPARK_HOME=/opt/spark
 cd $SPARK_HOME
-./bin/docker-image-tool.sh -r quay.io/myacct -t 3.3.1-myrelease build
+./bin/docker-image-tool.sh -r quay.io/myacct -t 3.3.1_2.12-myrelease build
 [...]
 Successfully build f07cd00df877
-Successfully tagged quay.io/myacct/spark:3.3.1-myrelease
+Successfully tagged quay.io/myacct/spark:3.3.1_2.12-myrelease
 ```
 
+### Java 11 vs Java 8
 The images used by the chart typically include Hive3 dependencies and 
 more recently support Java 11 with Hive 3.1.3. Hive versions 3.1.2 and 
 less do not support Spark and Java 11 completely and must use Java 8 instead. 
+
+### Scala Versions
+In the context of the history server, the underlying Scala version 
+does not really matter, though Spark 3 can support either 2.12 or 2.13.
+It can be useful to tag the image accordingly as this version is 
+key when it comes to other 3rd party Scala dependencies such as Iceberg 
+or Hudi. Unfortunately, some 3rd party projects have not fully adopted
+Scala 2.13 yet (eg. Hudi, Flink), so the default images are still Scala 2.12.
 
 <br>
 
