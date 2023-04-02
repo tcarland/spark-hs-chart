@@ -159,15 +159,15 @@ key-pair, as the Java Keytool does not allow for importing private keys.
 
 - Create a PKCS#12 container from a key pair.
   ```sh
-  openssl pkcs12 -export -in sparkhs.crt -inkey sparkhs.key \
-    -name sparkhs -out sparkhs.pfx
+  openssl pkcs12 -export -in spark-hs.crt -inkey spark-hs.key \
+    -name spark-hs -out spark-hs.pfx
   ```
 
 - Create the private Keystore
   ```sh
   keystore_passwd="mykeypass"
   keytool -importkeystore -deststorepass $keystore_passwd \
-  -destkeystore keystore.jks -srckeystore sparkhs.pfx -srcstoretype PKCS12
+  -destkeystore spark-hs.jks -srckeystore spark-hs.pfx -srcstoretype PKCS12
   ```
 
 Due to size limitiations, we create a truststore containing *only* the 
@@ -189,7 +189,7 @@ truststore is needed for all TLS Clients.
   Helm also prefers unwrapped base64 in the chart when creating the yaml 
   entry, thus the need for `-w0` to `base64`.
   ```sh
-  base64 -w0 keystore.jks > keystore.b64
+  base64 -w0 spark-hs.jks > spark-hs-jks.b64
   base64 -w0 truststore.jks > truststore.b64
   keystore_passwd="mykeypass"
   truststore_passwd="mytrustpass"
@@ -202,25 +202,25 @@ containing only the CA Certs necessary rather than using a fully loaded
 truststore (such as *jre/lib/security/cacerts*)
 ```sh
 helm install [...] --set \
-keystoreBase64=sparkhs.b64,\
-keystorePassword=$keystore_passwd,\
-truststoreBase64=truststore.b64,\
-trustStorePassword=$truststore_passwd
+secrets.keystoreBase64=spark-hs.b64,\
+secrets.keystorePassword=$keystore_passwd,\
+secrets.truststoreBase64=truststore.b64,\
+secrets.trustStorePassword=$truststore_passwd
 ```
 
 or a more complete version of the install command:
-```sh
+```bash
 helm install spark-history-server spark-hs-chart/spark-hs \
-  --namespace spark --create-namespace \
-  --set s3endpoint=${S3_ENDPOINT} \
-  --set s3accessKey=${S3_ACCESS_KEY} \
-  --set s3secretKey=${S3_SECRET_KEY} \
-  --set s3logDirectory=s3a://spark/spark-logs \
-  --set service.type=LoadBalancer \
-  --set secrets.keystorePassword=$keystore_passwd \
-  --set secrets.truststorePassword=$truststore_passwd \
-  --set-file secrets.keystoreBase64=sparkhs.b64 \
-  --set-file secrets.truststoreBase64=truststore.b64 
+--namespace spark --create-namespace \
+--set s3endpoint=${S3_ENDPOINT} \
+--set s3accessKey=${S3_ACCESS_KEY} \
+--set s3secretKey=${S3_SECRET_KEY} \
+--set s3logDirectory=s3a://spark/spark-logs \
+--set service.type=LoadBalancer \
+--set secrets.keystorePassword=$keystore_passwd \
+--set secrets.truststorePassword=$truststore_passwd \
+--set-file secrets.keystoreBase64=spark-hs-jks.b64 \
+--set-file secrets.truststoreBase64=truststore.b64 
 ```
 
 <br>
