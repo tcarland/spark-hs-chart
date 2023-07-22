@@ -14,13 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-ARG java_image_tag=11-jre-slim
+ARG java_image_tag=17-jre
 ARG spark_version=3.3.2
 ARG spark_uid=185
 # use a local repo to avoid apache.org rate-limiting
 ARG hive_uri=https://downloads.apache.org
 
-FROM openjdk:${java_image_tag}
+FROM eclipse-temurin:${java_image_tag}
 
 
 # Before building the docker image, first build and make a Spark distribution following
@@ -31,10 +31,9 @@ FROM openjdk:${java_image_tag}
 # docker build -t spark:latest -f kubernetes/dockerfiles/spark/Dockerfile .
 
 RUN set -ex && \
-    sed -i 's/http:\/\/deb.\(.*\)/https:\/\/deb.\1/g' /etc/apt/sources.list && \
     apt-get update && \
     ln -s /lib /lib64 && \
-    apt install -y bash coreutils curl tini libc6 libpam-modules krb5-user libnss3 procps && \
+    apt install -y bash coreutils curl tini libc6 libpam-modules krb5-user libnss3 procps net-tools && \
     mkdir -p /opt/spark && \
     mkdir -p /opt/spark/examples && \
     mkdir -p /opt/spark/work-dir && \
@@ -45,7 +44,7 @@ RUN set -ex && \
     ln -sv /bin/bash /bin/sh && \
     echo "auth required pam_wheel.so use_uid" >> /etc/pam.d/su && \
     chgrp root /etc/passwd && chmod ug+rw /etc/passwd && \
-    rm -rf /var/cache/apt/*
+    rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/*
 
 COPY jars /opt/spark/jars
 COPY bin /opt/spark/bin
