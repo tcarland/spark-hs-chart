@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/tcarland/spark
-  tag: v3.3.2_2.12-cyllene-2307.16
+  tag: v3.3.2_2.12-callisto-2307.29
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -27,11 +27,13 @@ securityContext:
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
 
-s3endpoint: ''
-s3accessKey: ''
-s3secretKey: ''
-s3logDirectory: ''
-s3disableCertChecking: false
+s3:
+  enabled: true
+  endpoint: ''
+  accessKey: ''
+  secretKey: ''
+  logDirectory: ''
+  disableCertChecking: false
 
 secrets:
   keystoreBase64: ''

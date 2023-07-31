@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "spark-hs.selectorLabels" . | nindent 8 }}
+        {{- include "spark-hs.labels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
