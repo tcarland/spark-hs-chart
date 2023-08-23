@@ -121,10 +121,10 @@ The typical image build process:
 ```bash
 export SPARK_HOME=/opt/spark
 cd $SPARK_HOME
-./bin/docker-image-tool.sh -r quay.io/myacct -t 3.3.2_2.12-myrelease build
+./bin/docker-image-tool.sh -r quay.io/myacct -t 3.3.3_2.13-myrelease build
 [...]
 Successfully build f07cd00df877
-Successfully tagged quay.io/myacct/spark:3.3.2_2.12-myrelease
+Successfully tagged quay.io/myacct/spark:3.3.3_2.13-myrelease
 ```
 
 ### Java 11 vs Java 8
@@ -281,7 +281,7 @@ keystore="$1"
 truststore="$2"
 
 kubectl create secret generic spark-keystore \
-  --namespace spark
+  --namespace spark \
   --from-file=keystore.jks=keystore.jks \
   --from-file=truststore.jks=truststore.jks \
   --dry-run=client -o yaml > secrets.yaml
