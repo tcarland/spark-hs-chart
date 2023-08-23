@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "spark-hs.fullname" . }}
+  name: {{ include "spark-hs.name" . }}
   labels:
     {{- include "spark-hs.labels" . | nindent 4 }}
 spec:
@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "spark-hs.selectorLabels" . | nindent 8 }}
+        {{- include "spark-hs.labels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -40,13 +40,22 @@ spec:
                       -Dspark.hadoop.fs.s3a.endpoint={{ .Values.s3endpoint }} \
                       -Dspark.hadoop.fs.s3a.access.key={{ .Values.s3accessKey }} \
                       -Dspark.hadoop.fs.s3a.secret.key={{ .Values.s3secretKey }} \
-                      -Dspark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem"
+                      -Dspark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem \
+                      -Dspark.hadoop.fs.s3a.committer.magic.enabled=true \
+                      -Dspark.hadoop.fs.s3a.path.style.access=true \
+                      -Dspark.hadoop.fs.s3a.committer.staging.abort.pending.uploads=true \
+                      -Dspark.hadoop.fs.s3a.block.size=512M \
+                      -Dspark.hadoop.fs.s3a.committer.staging.conflict-mode=append \
+                      -Dcom.amazonaws.sdk.disableCertChecking={{ .Values.s3disableCertChecking }}"
             - name: SPARK_CONF_DIR
               value: /opt/spark/conf
           volumeMounts:
             - name: config-volume
               mountPath: /opt/spark/conf/spark-defaults.conf
               subPath: spark-defaults.conf
+            - name: keystore-volume
+              mountPath: /mnt/secrets
+              readOnly: true
           ports:
             - name: http
               containerPort: {{ .Values.service.internalPort }}
@@ -56,7 +65,15 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "spark-hs.fullname" . }}-spark-hs-config
+            name: {{ template "spark-hs.name" . }}-config
+        - name: keystore-volume
+          secret:
+            secretName: {{ include "spark-hs.name" . }}-keystore
+            items:
+            - key: keystore.jks
+              path: keystore.jks
+            - key: truststore.jks
+              path: truststore.jks
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

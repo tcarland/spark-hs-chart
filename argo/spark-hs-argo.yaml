@@ -1,0 +1,38 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: spark-history-server
+  namespace: argocd
+spec:
+  destination:
+    namespace: spark
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    helm:
+      parameters:
+       - name: s3endpoint
+         value: "$S3_ENDPOINT"
+       - name: s3accessKey
+         value: "$S3_ACCESS_KEY"
+       - name: s3secretKey
+         value: "$S3_SECRET_KEY"
+       - name: s3logDirectory
+         value: "s3a://spark/spark-logs"
+       - name: service.type
+         value: "LoadBalancer"
+       - name: secrets.keystoreBase64
+         value: "$KEYSTORE_BASE64"
+       - name: secrets.keystorePassword
+         value: "$KEYSTORE_PASSWD"
+       - name: secrets.truststoreBase64
+         value: "$TRUSTSTORE_BASE64"
+       - name: secrets.truststorePassword
+         value: "$TRUSTSTORE_PASSWD"
+    chart: spark-hs
+    repoURL: https://tcarland.github.io/spark-hs-chart/
+    targetRevision: 0.8.6
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true

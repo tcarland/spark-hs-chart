@@ -1,2 +1,8 @@
 
+*.b64
+*.pfx
+*.jks
+*.crt
+*.cert
+*.key
 *.sw*
