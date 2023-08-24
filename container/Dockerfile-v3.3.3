@@ -15,13 +15,13 @@
 # limitations under the License.
 #
 ARG java_image_tag=17-jre
-
-FROM eclipse-temurin:${java_image_tag}
-
 ARG spark_version=3.3.3
 ARG spark_uid=185
 # use a local repo to avoid apache.org rate-limiting
 ARG hive_uri=https://downloads.apache.org
+
+FROM eclipse-temurin:${java_image_tag}
+
 
 # Before building the docker image, first build and make a Spark distribution following
 # the instructions in http://spark.apache.org/docs/latest/building-spark.html.
