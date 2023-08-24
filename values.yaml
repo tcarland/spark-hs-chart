@@ -1,4 +1,4 @@
-b# Default values for spark-hs-chart.
+# Default values for spark-hs-chart.
 #
 replicaCount: 1
 
