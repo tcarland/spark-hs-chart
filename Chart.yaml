@@ -2,5 +2,5 @@ apiVersion: v2
 name: spark-hs
 description: A Helm Chart for the Spark History Server
 type: application
-version: 0.8.7
+version: 0.9.1
 appVersion: 3.3.3
