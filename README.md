@@ -127,12 +127,6 @@ Successfully build f07cd00df877
 Successfully tagged quay.io/myacct/spark:3.3.3_2.13-myrelease
 ```
 
-### Java 11 vs Java 8 **Deprecated**
-
-The images used by the chart typically include Hive3 dependencies and 
-more recently support Java 17 with Hive 3.1.3.  Hive versions 3.1.2 and 
-less do not support Spark and Java 11 completely and must use Java 8 instead. 
-
 ### Scala Versions
 
 In the context of the history server, the underlying Scala version 
@@ -211,7 +205,7 @@ secrets.truststoreBase64=truststore.b64,\
 secrets.trustStorePassword=$truststore_passwd
 ```
 
-or a more complete version of the install command:
+Or a more complete version of the install command:
 ```bash
 helm install spark-history-server spark-hs-chart/spark-hs \
 --namespace spark --create-namespace \
