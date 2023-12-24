@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/tcarland/spark
-  tag: v3.3.3-callisto-2311.04
+  tag: v3.3.3-phobos-2312.20
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
