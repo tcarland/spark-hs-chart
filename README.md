@@ -15,7 +15,7 @@ can be customized by adjusting the values file.
 
 |     Option     | Description |
 | -------------- | ----------- |
-|  s3endpoint    | The S3 Endpoint URL   `https://minio.minio.svc` |
+|   s3endpoint   | The S3 Endpoint URL   `https://minio.minio.svc` |
 | s3logDirectory | The path to S3 bucket `s3a://spark/spark-logs` |
 |  s3accessKey   | The S3 Access Key |
 |  s3secretKey   | The S3 Secret Key |
@@ -35,45 +35,45 @@ A service account for spark is needed and should be created ahead of
 time or set *serviceAccount.create* as *true* in the `values.yaml` 
 file (the default is already `true`). This results in the following
 being applied:
-```
+```sh
 kubectl create namespace spark
 kubectl create serviceaccount spark --namespace spark
 
 kubectl create clusterrolebinding spark-rolebinding \
-  --clusterrole=edit \
-  --serviceaccount=spark:spark \
-  --namespace=spark
+--clusterrole=edit \
+--serviceaccount=spark:spark \
+--namespace=spark
 ```
 
 Install by a values file
-```
+```sh
 $ helm install -f <myvalues.yaml> --namespace <ns> <release-name> <path_to_chart>
 ```
 
 Alternative install via helm command-line.
-```
+```sh
 helm install spark-hs . \
-  --create-namespace --namespace spark 
-  --set s3endpoint=${S3_ENDPOINT} \
-  --set s3accessKey=${S3_ACCESS_KEY} \
-  --set s3secretKey=${S3_SECRET_KEY} \
-  --set s3logDirectory=s3a://spark/spark-logs \
-  --set service.type=LoadBalancer \
-  --set image.repository=gcr.io/myproject/spark 
+--create-namespace --namespace spark 
+--set s3endpoint=${S3_ENDPOINT} \
+--set s3accessKey=${S3_ACCESS_KEY} \
+--set s3secretKey=${S3_SECRET_KEY} \
+--set s3logDirectory=s3a://spark/spark-logs \
+--set service.type=LoadBalancer \
+--set image.repository=gcr.io/myproject/spark 
 ```
 
 The github also acts as our chart repository by using gh_pages 
 served from *github.io*.
-```
+```sh
 helm repo add spark-hs-chart https://tcarland.github.io/spark-hs-chart/
 helm install spark-history-server spark-hs-chart/spark-hs \
- --create-namespace --set [option] --namespace spark
+--create-namespace --set option=foo --namespace spark
 ```
 
 ## Uninstall Chart
 
 Simply use helm to remove the deployment
-```
+```sh
 helm uninstall --namespace spark spark-hs
 ```
 
@@ -127,18 +127,15 @@ Successfully build f07cd00df877
 Successfully tagged quay.io/myacct/spark:3.3.3_2.13-myrelease
 ```
 
-### Java 11 vs Java 8
-The images used by the chart typically include Hive3 dependencies and 
-more recently support Java 11 with Hive 3.1.3. Hive versions 3.1.2 and 
-less do not support Spark and Java 11 completely and must use Java 8 instead. 
-
 ### Scala Versions
+
 In the context of the history server, the underlying Scala version 
 does not really matter, though Spark 3 can support either 2.12 or 2.13.
 It can be useful to tag the image accordingly as this version is 
 key when it comes to other 3rd party Scala dependencies such as Iceberg 
 or Hudi. Unfortunately, some 3rd party projects have not fully adopted
-Scala 2.13 yet (eg. Hudi, Flink), so the default images are still Scala 2.12.
+Scala 2.13 yet (eg. Hudi, Flink). The default images provided here are 
+built using 2.13 so do not support Hudi, but do support Iceberg.
 
 <br>
 
@@ -160,7 +157,7 @@ key-pair, as the Java Keytool does not allow for importing private keys.
 - Create a PKCS#12 container from a key pair.
   ```sh
   openssl pkcs12 -export -in spark-hs.crt -inkey spark-hs.key \
-    -name spark-hs -out spark-hs.pfx
+  -name spark-hs -out spark-hs.pfx
   ```
 
 - Create the private Keystore
@@ -208,7 +205,7 @@ secrets.truststoreBase64=truststore.b64,\
 secrets.trustStorePassword=$truststore_passwd
 ```
 
-or a more complete version of the install command:
+Or a more complete version of the install command:
 ```bash
 helm install spark-history-server spark-hs-chart/spark-hs \
 --namespace spark --create-namespace \
@@ -235,11 +232,11 @@ vars which shold be set prior to deploying. The yaml provided expects
 *S3_ENDPOINT*, *S3_ACCESS_KEY*, and *S3_SECRET_KEY* to already be configured.
 
 To deploy to ArgoCD, parse the yaml through `envsubst` and send to `kubectl create`. 
-```
-  export S3_ENDPOINT="https://minio.mydomain.internal:443"
-  export S3_ACCESS_KEY="myaccesskey"
-  export S3_SECRET_KEY="mysecretkey"
-  cat argo/spark-hs-argo.yaml | envsubst | k create -f -
+```sh
+export S3_ENDPOINT="https://minio.mydomain.internal:443"
+export S3_ACCESS_KEY="myaccesskey"
+export S3_SECRET_KEY="mysecretkey"
+cat argo/spark-hs-argo.yaml | envsubst | k create -f -
 ```
 
 <br>
@@ -263,15 +260,15 @@ Where `<ns>` is the subcomponent:
 
 Spark configuration settings to be added to the ConfigMap
 ```ini
-    spark.ssl.historyServer.enabled=true
-    spark.ssl.historyServer.protocol=TLSv1.2
-    spark.ssl.historyServer.port=18080
-    spark.ssl.historyServer.keyStore=/mnt/secrets/keystore.jks
-    spark.ssl.historyServer.keyStorePassword={{ .Values.secrets.keystorePassword }}
-    spark.ssl.historyServer.keyStoreType=JKS
-    spark.ssl.historyServer.trustStore=/mnt/secrets/truststore.jks
-    spark.ssl.historyServer.trustStorePassword={{ .Values.secrets.truststorePassword }}
-    spark.ssl.historyServer.trustStoreType=JKS
+spark.ssl.historyServer.enabled=true
+spark.ssl.historyServer.protocol=TLSv1.2
+spark.ssl.historyServer.port=18080
+spark.ssl.historyServer.keyStore=/mnt/secrets/keystore.jks
+spark.ssl.historyServer.keyStorePassword={{ .Values.secrets.keystorePassword }}
+spark.ssl.historyServer.keyStoreType=JKS
+spark.ssl.historyServer.trustStore=/mnt/secrets/truststore.jks
+spark.ssl.historyServer.trustStorePassword={{ .Values.secrets.truststorePassword }}
+spark.ssl.historyServer.trustStoreType=JKS
 ```
 
 Creating a Secret manually for a Keystore and Truststore. Note that use 
@@ -281,12 +278,8 @@ keystore="$1"
 truststore="$2"
 
 kubectl create secret generic spark-keystore \
-  --namespace spark \
-  --from-file=keystore.jks=keystore.jks \
-  --from-file=truststore.jks=truststore.jks \
-  --dry-run=client -o yaml > secrets.yaml
+--namespace spark \
+--from-file=keystore.jks=keystore.jks \
+--from-file=truststore.jks=truststore.jks \
+--dry-run=client -o yaml > secrets.yaml
 ```
-
-
-
-
