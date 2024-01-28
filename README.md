@@ -15,10 +15,10 @@ can be customized by adjusting the values file.
 
 |     Option     | Description |
 | -------------- | ----------- |
-|   s3endpoint   | The S3 Endpoint URL   `https://minio.minio.svc` |
+| s3endpoint     | The S3 Endpoint URL   `https://minio.minio.svc` |
 | s3logDirectory | The path to S3 bucket `s3a://spark/spark-logs` |
-|  s3accessKey   | The S3 Access Key |
-|  s3secretKey   | The S3 Secret Key |
+| s3accessKey    | The S3 Access Key |
+| s3secretKey    | The S3 Secret Key |
 
 - *s3endpoint* in the format of `https://minio.minio.svc.cluster.local:443`
 - *s3logDirectory* defines the bucket path, which defaults to `s3a://spark/spark-logs`
@@ -121,10 +121,10 @@ The typical image build process:
 ```bash
 export SPARK_HOME=/opt/spark
 cd $SPARK_HOME
-./bin/docker-image-tool.sh -r quay.io/myacct -t 3.3.3_2.13-myrelease build
+./bin/docker-image-tool.sh -r quay.io/myacct -t 3.3.4-myrelease build
 [...]
 Successfully build f07cd00df877
-Successfully tagged quay.io/myacct/spark:3.3.3_2.13-myrelease
+Successfully tagged quay.io/myacct/spark:3.3.4-myrelease
 ```
 
 ### Scala Versions
