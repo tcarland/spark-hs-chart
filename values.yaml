@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/tcarland/spark
-  tag: v3.3.4-dione-2402.05
+  tag: v3.3.4-tethys-2402.18
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -16,15 +16,10 @@ serviceAccount:
   annotations: {}
   name: 'spark'
 
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: 
-  #runAsUser: 1000
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
+podSecurityContext:
+  runAsUser: 185
+  runAsGroup: 1000
+  fsGroup: 1000
   # runAsNonRoot: true
 
 s3:
