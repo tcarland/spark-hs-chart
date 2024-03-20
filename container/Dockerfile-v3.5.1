@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-ARG spark_version=3.3.4
 ARG spark_uid=185
 ARG hive_uri=https://downloads.apache.org
 
@@ -33,12 +32,13 @@ RUN set -ex && \
     echo ${spark_version} > /opt/spark/RELEASE && \
     rm /bin/sh && \
     ln -sv /bin/bash /bin/sh && \
+    useradd -u ${spark_uid} -m spark && \
     echo "auth required pam_wheel.so use_uid" >> /etc/pam.d/su && \
     chgrp root /etc/passwd && chmod ug+rw /etc/passwd && \
     rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/*
 
-
 COPY jars /opt/spark/jars
+COPY RELEASE /opt/spark/RELEASE
 COPY bin /opt/spark/bin
 COPY sbin /opt/spark/sbin
 COPY kubernetes/dockerfiles/spark/entrypoint.sh /opt/
@@ -54,10 +54,10 @@ RUN curl ${hive_uri}/hive/hive-3.1.3/apache-hive-3.1.3-bin.tar.gz \
 ENV SPARK_HOME /opt/spark
 
 WORKDIR /opt/spark/work-dir
-RUN chmod g+w /opt/spark/work-dir
-RUN chmod a+x /opt/decom.sh
+RUN chown spark:spark /opt/spark/work-dir && \
+    chmod g+w /opt/spark/work-dir && \
+    chmod a+x /opt/decom.sh
 
 ENTRYPOINT [ "/opt/entrypoint.sh" ]
 
-# Specify the User that the actual main process will run as
 USER ${spark_uid}

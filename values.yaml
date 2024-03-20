@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/tcarland/spark
-  tag: v3.3.4-tethys-2402.18
+  tag: v3.5.1-io-2403.17
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []

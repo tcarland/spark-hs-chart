@@ -121,21 +121,21 @@ The typical image build process:
 ```bash
 export SPARK_HOME=/opt/spark
 cd $SPARK_HOME
-./bin/docker-image-tool.sh -r quay.io/myacct -t 3.3.4-myrelease build
+./bin/docker-image-tool.sh -r quay.io/myacct -t 3.5.1-myrelease build
 [...]
 Successfully build f07cd00df877
-Successfully tagged quay.io/myacct/spark:3.3.4-myrelease
+Successfully tagged quay.io/myacct/spark:3.5.1-myrelease
 ```
 
 ### Scala Versions
 
 In the context of the history server, the underlying Scala version 
-does not really matter, though Spark 3 can support either 2.12 or 2.13.
+does not really matter, Spark 3 supports either 2.12 or 2.13.
 It can be useful to tag the image accordingly as this version is 
 key when it comes to other 3rd party Scala dependencies such as Iceberg 
 or Hudi. Unfortunately, some 3rd party projects have not fully adopted
 Scala 2.13 yet (eg. Hudi, Flink). The default images provided here are 
-built using 2.13 so do not support Hudi, but do support Iceberg.
+built using 2.13.
 
 <br>
 
