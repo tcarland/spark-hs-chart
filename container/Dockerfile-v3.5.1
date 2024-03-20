@@ -37,7 +37,6 @@ RUN set -ex && \
     chgrp root /etc/passwd && chmod ug+rw /etc/passwd && \
     rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/*
 
-
 COPY jars /opt/spark/jars
 COPY RELEASE /opt/spark/RELEASE
 COPY bin /opt/spark/bin
