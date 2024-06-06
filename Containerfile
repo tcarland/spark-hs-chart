@@ -14,17 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+FROM eclipse-temurin:21-jre
 ARG spark_uid=185
 ARG hive_uri=https://downloads.apache.org
-
-FROM debian:bullseye-slim
 
 RUN set -ex && \
     sed -i 's/http:\/\/deb.\(.*\)/https:\/\/deb.\1/g' /etc/apt/sources.list && \
     apt-get update && \
     ln -s /lib /lib64 && \
     apt install -y --no-install-recommends \
-    bash coreutils curl tini libc6 libpam-modules krb5-user libnss3 procps net-tools openjdk-17-jre && \
+    bash coreutils curl krb5-user libc6 libpam-modules libnss3 net-tools procps tini && \
     mkdir -p /opt/spark && \
     mkdir -p /opt/spark/examples && \
     mkdir -p /opt/spark/work-dir && \
