@@ -14,18 +14,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-FROM eclipse-temurin:17-jre
-ARG spark_uid=185
+ARG java_image_tag=17-jre
+
+FROM eclipse-temurin:${java_image_tag}
 ARG hive_uri=https://downloads.apache.org
+ARG spark_uid=185
 
 RUN set -ex && \
     sed -i 's/http:\/\/deb.\(.*\)/https:\/\/deb.\1/g' /etc/apt/sources.list && \
     apt-get update && \
     ln -s /lib /lib64 && \
-    apt install -y --no-install-recommends \
-    bash coreutils curl krb5-user libc6 libpam-modules libnss3 net-tools procps tini && \
+    apt install -y bash \
+        coreutils \
+        curl \
+        krb5-user \
+        libc6 \
+        libpam-modules \
+        libnss3 \
+        net-tools \
+        procps \
+        tini && \
     mkdir -p /opt/spark && \
-    mkdir -p /opt/spark/examples && \
+    #mkdir -p /opt/spark/examples && \
     mkdir -p /opt/spark/work-dir && \
     touch /opt/spark/RELEASE && \
     echo ${spark_version} > /opt/spark/RELEASE && \
@@ -42,13 +52,13 @@ COPY bin /opt/spark/bin
 COPY sbin /opt/spark/sbin
 COPY kubernetes/dockerfiles/spark/entrypoint.sh /opt/
 COPY kubernetes/dockerfiles/spark/decom.sh /opt/
-COPY examples /opt/spark/examples
+#COPY examples /opt/spark/examples
 COPY kubernetes/tests /opt/spark/tests
 COPY data /opt/spark/data
 
 RUN curl ${hive_uri}/hive/hive-3.1.3/apache-hive-3.1.3-bin.tar.gz \
-    | tar xvz -C /opt/ \
-    && ln -s /opt/apache-hive-3.1.3-bin /opt/hive
+	| tar xvz -C /opt/ \
+	&& ln -s /opt/apache-hive-3.1.3-bin /opt/hive
 
 ENV SPARK_HOME /opt/spark
 
