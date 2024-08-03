@@ -135,7 +135,7 @@ It can be useful to tag the image accordingly as this version is
 key when it comes to other 3rd party Scala dependencies such as Iceberg 
 or Hudi. Unfortunately, some 3rd party projects have not fully adopted
 Scala 2.13 yet (eg. Hudi, Flink). The default images provided here are 
-built using 2.13.
+built using 2.13, includes Iceberg and Delta dependencies.
 
 <br>
 

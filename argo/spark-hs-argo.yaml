@@ -32,7 +32,7 @@ spec:
          value: "$TRUSTSTORE_PASSWD"
     chart: spark-hs
     repoURL: https://tcarland.github.io/spark-hs-chart/
-    targetRevision: 1.0.4
+    targetRevision: 1.0.6
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
