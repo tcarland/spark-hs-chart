@@ -121,10 +121,10 @@ The typical image build process:
 ```bash
 export SPARK_HOME=/opt/spark
 cd $SPARK_HOME
-./bin/docker-image-tool.sh -r quay.io/myacct -t 3.5.1-myrelease build
+./bin/docker-image-tool.sh -r quay.io/myacct -t 3.5.3-myrelease build
 [...]
 Successfully build f07cd00df877
-Successfully tagged quay.io/myacct/spark:3.5.1-myrelease
+Successfully tagged quay.io/myacct/spark:3.5.3-myrelease
 ```
 
 ### Scala Versions
