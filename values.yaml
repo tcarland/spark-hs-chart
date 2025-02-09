@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/tcarland/spark
-  tag: v3.5.4-cyllene-2412.21
+  tag: v3.5.4-callisto-2501.28
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -45,13 +45,13 @@ ingress:
   enabled: false
   annotations: {}
 
-resources: {}
-  # limits:
-  #   cpu: 500m
-  #   memory: 512Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
 
 nodeSelector: {}
 
