@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/tcarland/spark
-  tag: v3.5.5-tethys-2503.24
+  tag: v3.5.5-thebe-2504.11
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -24,6 +24,7 @@ podSecurityContext:
 
 s3:
   enabled: true
+  region: ''
   endpoint: ''
   accessKey: ''
   secretKey: ''

@@ -1,16 +1,16 @@
 Spark 3 History Server Helm Chart
 ===============================
 
-A helm chart for deploying the Spark History Server to Kubernetes 
-using S3 Object Storage for the Spark Event Logs. Many of the existing 
-charts do not account for the S3 requirements. This chart was created 
+A helm chart for deploying the Spark History Server to Kubernetes
+using S3 Object Storage for the Spark Event Logs. Many of the existing
+charts do not account for the S3 requirements. This chart was created
 specifically for Spark 3 using S3 for the history logs.
 
 <br>
 
 ## Configuration
 
-The chart takes a few primary config parameters; other options 
+The chart takes a few primary config parameters; other options
 can be customized by adjusting the values file.
 
 |     Option     | Description |
@@ -28,11 +28,11 @@ can be customized by adjusting the values file.
 
 ## Install the Helm Chart
 
-Config parameters can be added to a custom version of *values.yaml* 
+Config parameters can be added to a custom version of *values.yaml*
 and passed to helm via `-f myvalues.yaml` or via the `--set` directive.
 
-A service account for spark is needed and should be created ahead of 
-time or set *serviceAccount.create* as *true* in the `values.yaml` 
+A service account for spark is needed and should be created ahead of
+time or set *serviceAccount.create* as *true* in the `values.yaml`
 file (the default is already `true`). This results in the following
 being applied:
 ```sh
@@ -53,16 +53,16 @@ $ helm install -f <myvalues.yaml> --namespace <ns> <release-name> <path_to_chart
 Alternative install via helm command-line.
 ```sh
 helm install spark-hs . \
---create-namespace --namespace spark 
+--create-namespace --namespace spark
 --set s3endpoint=${S3_ENDPOINT} \
 --set s3accessKey=${S3_ACCESS_KEY} \
 --set s3secretKey=${S3_SECRET_KEY} \
 --set s3logDirectory=s3a://spark/spark-logs \
 --set service.type=LoadBalancer \
---set image.repository=gcr.io/myproject/spark 
+--set image.repository=gcr.io/myproject/spark
 ```
 
-The github also acts as our chart repository by using gh_pages 
+The github also acts as our chart repository by using gh_pages
 served from *github.io*.
 ```sh
 helm repo add spark-hs-chart https://tcarland.github.io/spark-hs-chart/
@@ -79,8 +79,8 @@ helm uninstall --namespace spark spark-hs
 
 ## Accessing the UI
 
-By default the Service is using *ClusterIP*. Typically, we add an 
-ingress gateway and use *LoadBalancer*. 
+By default the Service is using *ClusterIP*. Typically, we add an
+ingress gateway and use *LoadBalancer*.
 
 A quick validation would be to port-forward the history server port.
 ```bash
@@ -104,17 +104,17 @@ echo https://$NODE_IP:$NODE_PORT
 
 ## Building a Spark Image
 ￼
-The Apache Spark distribution provides a *Dockerfile* and an image build 
-tool for generating container images. Typically a binary package 
-dowloaded from spark.apache.org will work fine.  The spark images 
-referenced by this repository use a Spark3 package with Hadoop3 libs 
+The Apache Spark distribution provides a *Dockerfile* and an image build
+tool for generating container images. Typically a binary package
+dowloaded from spark.apache.org will work fine.  The spark images
+referenced by this repository use a Spark3 package with Hadoop3 libs
 included, but this is generally chosen to match ones environment.
 
-Custom JARs can be added to $SPARK_HOME/jars prior to building the 
-image, but the jars should be tested to ensure there are no dependency 
+Custom JARs can be added to $SPARK_HOME/jars prior to building the
+image, but the jars should be tested to ensure there are no dependency
 collisions that would require shading resources.
 
-The dockerfile used by the image-tool is located at 
+The dockerfile used by the image-tool is located at
 *$SPARK_HOME/kubernetes/dockerfiles/spark/Dockerfile*
 
 The typical image build process:
@@ -129,12 +129,12 @@ Successfully tagged quay.io/myacct/spark:3.5.4-myrelease
 
 ### Scala Versions
 
-In the context of the history server, the underlying Scala version 
+In the context of the history server, the underlying Scala version
 does not really matter, Spark 3 supports either 2.12 or 2.13.
-It can be useful to tag the image accordingly as this version is 
-key when it comes to other 3rd party Scala dependencies such as Iceberg 
+It can be useful to tag the image accordingly as this version is
+key when it comes to other 3rd party Scala dependencies such as Iceberg
 or Hudi. Unfortunately, some 3rd party projects have not fully adopted
-Scala 2.13 yet (eg. Hudi, Flink). The default images provided here are 
+Scala 2.13 yet (eg. Hudi, Flink). The default images provided here are
 built using 2.13, includes Iceberg and Delta dependencies.
 
 <br>
@@ -143,15 +143,15 @@ built using 2.13, includes Iceberg and Delta dependencies.
 
 ## Configuring TLS
 
-If exposing the HistoryService via TLS, certificates should have the 
-*CommonName* as the exposed FQDN with the Kubernetes internal service 
+If exposing the HistoryService via TLS, certificates should have the
+*CommonName* as the exposed FQDN with the Kubernetes internal service
 names listed as the *SubjectAlternateName* (SAN) such as the following
 example.
 ```
 DNS:spark-hs.spark.svc.cluster.local,DNS:*.spark.svc.cluster.local,DNS:spark-hs.spark,DNS:spark-hs.spark.svc
 ```
 
-Creating a Java Keystore involves first having a PKCS#12 formatted 
+Creating a Java Keystore involves first having a PKCS#12 formatted
 key-pair, as the Java Keytool does not allow for importing private keys.
 
 - Create a PKCS#12 container from a key pair.
@@ -167,11 +167,11 @@ key-pair, as the Java Keytool does not allow for importing private keys.
   -destkeystore spark-hs.jks -srckeystore spark-hs.pfx -srcstoretype PKCS12
   ```
 
-Due to size limitiations, we create a truststore containing *only* the 
+Due to size limitiations, we create a truststore containing *only* the
 certificates needed rather than copy the existing Java cacerts file. The
 truststore is needed for all TLS Clients.
 
-- Create and/or add the CA Certificate to the truststore. This will prompt 
+- Create and/or add the CA Certificate to the truststore. This will prompt
   for a truststore password.
   ```sh
   keytool -importcert -alias rootca -keystore truststore.jks -file ca.crt
@@ -183,7 +183,7 @@ truststore is needed for all TLS Clients.
   ```
 
 - Set the keystore and truststore values when deploying the helm chart.
-  Helm also prefers unwrapped base64 in the chart when creating the yaml 
+  Helm also prefers unwrapped base64 in the chart when creating the yaml
   entry, thus the need for `-w0` to `base64`.
   ```sh
   base64 -w0 spark-hs.jks > spark-hs-jks.b64
@@ -195,7 +195,7 @@ truststore is needed for all TLS Clients.
 Note that the base64 versions of a keystore and truststore exceed the
 shells maximum string length for a variable, so we pass those in via
 the helm `--set-file` option. Accordingly, we create a *slim* truststore
-containing only the CA Certs necessary rather than using a fully loaded 
+containing only the CA Certs necessary rather than using a fully loaded
 truststore (such as *jre/lib/security/cacerts*)
 ```sh
 helm install [...] --set \
@@ -207,17 +207,18 @@ secrets.trustStorePassword=$truststore_passwd
 
 Or a more complete version of the install command:
 ```bash
-helm install spark-history-server spark-hs-chart/spark-hs \
+helm upgrade --install spark-history-server spark-hs-chart/spark-hs \
 --namespace spark --create-namespace \
---set s3endpoint=${S3_ENDPOINT} \
---set s3accessKey=${S3_ACCESS_KEY} \
---set s3secretKey=${S3_SECRET_KEY} \
---set s3logDirectory=s3a://spark/spark-logs \
+--set s3.endpoint=${S3_ENDPOINT} \
+--set s3.region=${S3_REGION} \
+--set s3.accessKey=${S3_ACCESS_KEY} \
+--set s3.secretKey=${S3_SECRET_KEY} \
+--set s3.logDirectory=s3a://spark/spark-logs \
 --set service.type=LoadBalancer \
 --set secrets.keystorePassword=$keystore_passwd \
 --set secrets.truststorePassword=$truststore_passwd \
 --set-file secrets.keystoreBase64=spark-hs-jks.b64 \
---set-file secrets.truststoreBase64=truststore.b64 
+--set-file secrets.truststoreBase64=truststore.b64
 ```
 
 <br>
@@ -227,11 +228,11 @@ helm install spark-history-server spark-hs-chart/spark-hs \
 ## Using ArgoCD to deploy a helm chart
 
 An Argo *Application* yaml as in *argo/spark-hs-argo.yaml* which defines
-the required chart values. The argo app sets secrets through environment 
-vars which shold be set prior to deploying. The yaml provided expects 
+the required chart values. The argo app sets secrets through environment
+vars which shold be set prior to deploying. The yaml provided expects
 *S3_ENDPOINT*, *S3_ACCESS_KEY*, and *S3_SECRET_KEY* to already be configured.
 
-To deploy to ArgoCD, parse the yaml through `envsubst` and send to `kubectl create`. 
+To deploy to ArgoCD, parse the yaml through `envsubst` and send to `kubectl create`.
 ```sh
 export S3_ENDPOINT="https://minio.mydomain.internal:443"
 export S3_ACCESS_KEY="myaccesskey"
@@ -271,7 +272,7 @@ spark.ssl.historyServer.trustStorePassword={{ .Values.secrets.truststorePassword
 spark.ssl.historyServer.trustStoreType=JKS
 ```
 
-Creating a Secret manually for a Keystore and Truststore. Note that use 
+Creating a Secret manually for a Keystore and Truststore. Note that use
 of `--from-file` already base64 encodes the provided files.
 ```sh
 keystore="$1"
