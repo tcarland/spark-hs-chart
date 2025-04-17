@@ -167,46 +167,45 @@ key-pair, as the Java Keytool does not allow for importing private keys.
   -destkeystore spark-hs.jks -srckeystore spark-hs.pfx -srcstoretype PKCS12
   ```
 
-Due to size limitiations, we create a truststore containing *only* the
-certificates needed rather than copy the existing Java cacerts file. The
-truststore is needed for all TLS Clients.
-
 - Create and/or add the CA Certificate to the truststore. This will prompt
   for a truststore password.
   ```sh
   keytool -importcert -alias rootca -keystore truststore.jks -file ca.crt
   ```
 
-- Change the password of a truststore
+- Change the password of a truststore. NOTE: Truststores do not need to 
+  be as 'secret' as keystores thus it is often easier to use the default
+  password used with all Java distributions.
   ```sh
   keytool -storepasswd -keystore truststore.jks
   ```
 
 - Set the keystore and truststore values when deploying the helm chart.
+  Note the keystore and truststore files must be relevant to the helm 
+  chart root for helm `.Files.Get` to function properly.
+  ```bash
+  helm install [...] --set \
+  secrets.keystoreFile=spark-hs.jks,\
+  secrets.keystorePassword=$keystore_passwd,\
+  secrets.truststoreFile=truststore.jks,\
+  secrets.trustStorePassword=$truststore_passwd
+  ```
 
-```sh
-helm install [...] --set \
-secrets.keystoreFile=spark-hs.jks,\
-secrets.keystorePassword=$keystore_passwd,\
-secrets.truststoreFile=truststore.jks,\
-secrets.trustStorePassword=$truststore_passwd
-```
-
-Or a more complete version of the install command:
-```bash
-helm upgrade --install spark-history-server spark-hs-chart/spark-hs \
---namespace spark --create-namespace \
---set s3.endpoint=${S3_ENDPOINT} \
---set s3.region=${S3_REGION} \
---set s3.accessKey=${S3_ACCESS_KEY} \
---set s3.secretKey=${S3_SECRET_KEY} \
---set s3.logDirectory=s3a://spark/spark-logs \
---set service.type=LoadBalancer \
---set secrets.keystorePassword=$keystore_passwd \
---set secrets.truststorePassword=$truststore_passwd \
---set-file secrets.keystoreFile=spark-hs.jks \
---set-file secrets.truststoreFile=truststore.jks
-```
+- A complete version of the install command:
+  ```bash
+  helm upgrade --install spark-history-server spark-hs-chart/spark-hs \
+  --namespace spark --create-namespace \
+  --set s3.endpoint=${S3_ENDPOINT} \
+  --set s3.region=${S3_REGION} \
+  --set s3.accessKey=${S3_ACCESS_KEY} \
+  --set s3.secretKey=${S3_SECRET_KEY} \
+  --set s3.logDirectory=s3a://spark/spark-logs \
+  --set service.type=LoadBalancer \
+  --set secrets.keystorePassword=$keystore_passwd \
+  --set secrets.truststorePassword=$truststore_passwd \
+  --set-file secrets.keystoreFile=spark-hs.jks \
+  --set-file secrets.truststoreFile=truststore.jks
+  ```
 
 <br>
 
@@ -220,7 +219,7 @@ vars which shold be set prior to deploying. The yaml provided expects
 *S3_ENDPOINT*, *S3_ACCESS_KEY*, and *S3_SECRET_KEY* to already be configured.
 
 To deploy to ArgoCD, parse the yaml through `envsubst` and send to `kubectl create`.
-```sh
+```bash
 export S3_ENDPOINT="https://minio.mydomain.internal:443"
 export S3_ACCESS_KEY="myaccesskey"
 export S3_SECRET_KEY="mysecretkey"
