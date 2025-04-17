@@ -183,25 +183,12 @@ truststore is needed for all TLS Clients.
   ```
 
 - Set the keystore and truststore values when deploying the helm chart.
-  Helm also prefers unwrapped base64 in the chart when creating the yaml
-  entry, thus the need for `-w0` to `base64`.
-  ```sh
-  base64 -w0 spark-hs.jks > spark-hs-jks.b64
-  base64 -w0 truststore.jks > truststore.b64
-  keystore_passwd="mykeypass"
-  truststore_passwd="mytrustpass"
-  ```
 
-Note that the base64 versions of a keystore and truststore exceed the
-shells maximum string length for a variable, so we pass those in via
-the helm `--set-file` option. Accordingly, we create a *slim* truststore
-containing only the CA Certs necessary rather than using a fully loaded
-truststore (such as *jre/lib/security/cacerts*)
 ```sh
 helm install [...] --set \
-secrets.keystoreBase64=spark-hs.b64,\
+secrets.keystoreFile=spark-hs.jks,\
 secrets.keystorePassword=$keystore_passwd,\
-secrets.truststoreBase64=truststore.b64,\
+secrets.truststoreFile=truststore.jks,\
 secrets.trustStorePassword=$truststore_passwd
 ```
 
@@ -217,8 +204,8 @@ helm upgrade --install spark-history-server spark-hs-chart/spark-hs \
 --set service.type=LoadBalancer \
 --set secrets.keystorePassword=$keystore_passwd \
 --set secrets.truststorePassword=$truststore_passwd \
---set-file secrets.keystoreBase64=spark-hs-jks.b64 \
---set-file secrets.truststoreBase64=truststore.b64
+--set-file secrets.keystoreFile=spark-hs.jks \
+--set-file secrets.truststoreFile=truststore.jks
 ```
 
 <br>

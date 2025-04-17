@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/tcarland/spark
-  tag: v3.5.5-thebe-2504.11
+  tag: v3.5.5-thebe-2504.14
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -32,9 +32,9 @@ s3:
   disableCertChecking: false
 
 secrets:
-  keystoreBase64: ''
+  keystoreFile: ''
   keystorePassword: ''
-  truststoreBase64: ''
+  truststoreFile: ''
   truststorePassword: 'changeit'
 
 service:
