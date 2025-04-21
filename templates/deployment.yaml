@@ -52,7 +52,12 @@ spec:
               mountPath: /opt/spark/conf/spark-defaults.conf
               subPath: spark-defaults.conf
             - name: keystore-volume
-              mountPath: /mnt/secrets
+              mountPath: /mnt/secrets/keystore.jks
+              subPath: keystore.jks
+              readOnly: true
+            - name: truststore-volume
+              mountPath: /mnt/secrets/truststore.jks
+              subPath: truststore.jks
               readOnly: true
           ports:
             - name: http
@@ -67,11 +72,9 @@ spec:
         - name: keystore-volume
           secret:
             secretName: {{ include "spark-hs.name" . }}-keystore
-            items:
-            - key: keystore.jks
-              path: keystore.jks
-            - key: truststore.jks
-              path: truststore.jks
+        - name: truststore-volume
+          secret:
+            secretName: {{ include "spark-hs.name" . }}-truststore
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
