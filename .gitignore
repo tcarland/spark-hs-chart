@@ -6,3 +6,5 @@
 *.cert
 *.key
 *.sw*
+.zed
+cacerts
