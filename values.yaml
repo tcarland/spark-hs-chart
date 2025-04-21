@@ -31,7 +31,7 @@ s3:
   logDirectory: ''
   disableCertChecking: false
 
-secrets:
+ssl:
   keystoreFile: ''
   keystorePassword: ''
   truststoreFile: ''
