@@ -47,12 +47,14 @@ kubectl create clusterrolebinding spark-rolebinding \
 
 Install by a values file
 ```sh
-$ helm install -f <myvalues.yaml> --namespace <ns> <release-name> <path_to_chart>
+helm install -f <myvalues.yaml> \
+--namespace <ns> \
+<release-name> <path_to_chart>
 ```
 
 Alternative install via helm command-line.
 ```sh
-helm install spark-hs . \
+helm upgrade --install spark-hs . \
 --create-namespace --namespace spark
 --set s3endpoint=${S3_ENDPOINT} \
 --set s3accessKey=${S3_ACCESS_KEY} \
@@ -67,7 +69,7 @@ served from *github.io*.
 ```sh
 helm repo add spark-hs-chart https://tcarland.github.io/spark-hs-chart/
 helm install spark-history-server spark-hs-chart/spark-hs \
---create-namespace --set option=foo --namespace spark
+--create-namespace --namespace spark --set option=foo
 ```
 
 ## Uninstall Chart
@@ -121,10 +123,10 @@ The typical image build process:
 ```bash
 export SPARK_HOME=/opt/spark
 cd $SPARK_HOME
-./bin/docker-image-tool.sh -r quay.io/myacct -t 3.5.4-myrelease build
+./bin/docker-image-tool.sh -r quay.io/myacct -t 3.5.6-myrelease build
 [...]
 Successfully build f07cd00df877
-Successfully tagged quay.io/myacct/spark:3.5.4-myrelease
+Successfully tagged quay.io/myacct/spark:3.5.6-myrelease
 ```
 
 ### Scala Versions
@@ -135,7 +137,7 @@ It can be useful to tag the image accordingly as this version is
 key when it comes to other 3rd party Scala dependencies such as Iceberg
 or Hudi. Unfortunately, some 3rd party projects have not fully adopted
 Scala 2.13 yet (eg. Hudi, Flink). The default images provided here are
-built using 2.13, includes Iceberg and Delta dependencies.
+built using 2.13, with included Iceberg and Delta dependencies.
 
 <br>
 
