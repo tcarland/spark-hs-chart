@@ -1,10 +1,11 @@
 Spark 3 History Server Helm Chart
-===============================
+=================================
 
 A helm chart for deploying the Spark History Server to Kubernetes
 using S3 Object Storage for the Spark Event Logs. Many of the existing
-charts do not account for the S3 requirements. This chart was created
-specifically for Spark 3 using S3 for the history logs.
+charts (at the time of first commit) do not account for the S3 
+requirements. This chart was created specifically for Apache Spark 
+using S3 for the history logs.
 
 <br>
 
@@ -38,7 +39,6 @@ being applied:
 ```sh
 kubectl create namespace spark
 kubectl create serviceaccount spark --namespace spark
-
 kubectl create clusterrolebinding spark-rolebinding \
 --clusterrole=edit \
 --serviceaccount=spark:spark \
@@ -47,21 +47,19 @@ kubectl create clusterrolebinding spark-rolebinding \
 
 Install by a values file
 ```sh
-helm install -f <myvalues.yaml> \
---namespace <ns> \
-<release-name> <path_to_chart>
+helm install -f <myvalues.yaml> --namespace <ns> <release-name> <path_to_chart>
 ```
 
 Alternative install via helm command-line.
 ```sh
 helm upgrade --install spark-hs . \
---create-namespace --namespace spark
---set s3endpoint=${S3_ENDPOINT} \
---set s3accessKey=${S3_ACCESS_KEY} \
---set s3secretKey=${S3_SECRET_KEY} \
---set s3logDirectory=s3a://spark/spark-logs \
---set service.type=LoadBalancer \
---set image.repository=gcr.io/myproject/spark
+  --create-namespace --namespace spark \
+  --set s3endpoint=${S3_ENDPOINT} \
+  --set s3accessKey=${S3_ACCESS_KEY} \
+  --set s3secretKey=${S3_SECRET_KEY} \
+  --set s3logDirectory=s3a://spark/spark-logs \
+  --set service.type=LoadBalancer \
+  --set image.repository=gcr.io/myproject/spark
 ```
 
 The github also acts as our chart repository by using gh_pages
@@ -137,7 +135,13 @@ It can be useful to tag the image accordingly as this version is
 key when it comes to other 3rd party Scala dependencies such as Iceberg
 or Hudi. Unfortunately, some 3rd party projects have not fully adopted
 Scala 2.13 yet (eg. Hudi, Flink). The default images provided here are
-built using 2.13, with included Iceberg and Delta dependencies.
+built using 2.13, with included Iceberg and Delta dependencies. Given 
+that Spark images are very large, we can use the main spark image for 
+the HistoryServer as well for Spark jobs reducing the large blob size 
+accumulated.
+
+Note that Spark 4 has defined profiles only for Scala 2.13, 2.12 is no 
+longer supported.
 
 <br>
 
@@ -185,28 +189,28 @@ key-pair, as the Java Keytool does not allow for importing private keys.
 - Set the keystore and truststore values when deploying the helm chart.
   Note the keystore and truststore files must be relevant to the helm 
   chart root for helm `.Files.Get` to function properly.
-  ```bash
+  ```sh
   helm install [...] --set \
-  secrets.keystoreFile=spark-hs.jks,\
-  secrets.keystorePassword=$keystore_passwd,\
-  secrets.truststoreFile=truststore.jks,\
-  secrets.trustStorePassword=$truststore_passwd
+    secrets.keystoreFile=spark-hs.jks,\
+    secrets.keystorePassword=$keystore_passwd,\
+    secrets.truststoreFile=truststore.jks,\
+    secrets.trustStorePassword=$truststore_passwd
   ```
 
 - A complete version of the install command:
-  ```bash
+  ```sh
   helm upgrade --install spark-history-server spark-hs-chart/spark-hs \
-  --namespace spark --create-namespace \
-  --set s3.endpoint=${S3_ENDPOINT} \
-  --set s3.region=${S3_REGION} \
-  --set s3.accessKey=${S3_ACCESS_KEY} \
-  --set s3.secretKey=${S3_SECRET_KEY} \
-  --set s3.logDirectory=s3a://spark/spark-logs \
-  --set service.type=LoadBalancer \
-  --set secrets.keystorePassword=$keystore_passwd \
-  --set secrets.truststorePassword=$truststore_passwd \
-  --set-file secrets.keystoreFile=spark-hs.jks \
-  --set-file secrets.truststoreFile=truststore.jks
+    --namespace spark --create-namespace \
+    --set s3.endpoint=${S3_ENDPOINT} \
+    --set s3.region=${S3_REGION} \
+    --set s3.accessKey=${S3_ACCESS_KEY} \
+    --set s3.secretKey=${S3_SECRET_KEY} \
+    --set s3.logDirectory=s3a://spark/spark-logs \
+    --set service.type=LoadBalancer \
+    --set secrets.keystorePassword=$keystore_passwd \
+    --set secrets.truststorePassword=$truststore_passwd \
+    --set-file secrets.keystoreFile=spark-hs.jks \
+    --set-file secrets.truststoreFile=truststore.jks
   ```
 
 <br>
@@ -267,8 +271,8 @@ keystore="$1"
 truststore="$2"
 
 kubectl create secret generic spark-keystore \
---namespace spark \
---from-file=keystore.jks=keystore.jks \
---from-file=truststore.jks=truststore.jks \
---dry-run=client -o yaml > secrets.yaml
+  --namespace spark \
+  --from-file=keystore.jks=keystore.jks \
+  --from-file=truststore.jks=truststore.jks \
+  --dry-run=client -o yaml > secrets.yaml
 ```
