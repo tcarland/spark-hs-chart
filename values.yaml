@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/tcarland/spark
-  tag: v4.0.1-tethys-2509.25
+  tag: v4.0.1-thebe-2510.25
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -32,9 +32,9 @@ s3:
   disableCertChecking: false
 
 ssl:
-  keystoreFile: ''
+  keystoreSecretName: ''
   keystorePassword: ''
-  truststoreFile: ''
+  truststoreSecretName: ''
   truststorePassword: 'changeit'
 
 service:
@@ -44,7 +44,16 @@ service:
 
 ingress:
   enabled: false
+  labels: {}
   annotations: {}
+  hosts:
+    - host: spark-hs.local
+      paths:
+        - /
+  tls:
+    - secretName: spark-hs-tls
+      hosts:
+        - spark-hs.local
 
 resources:
   limits:
