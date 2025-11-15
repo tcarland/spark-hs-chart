@@ -186,14 +186,22 @@ key-pair, as the Java Keytool does not allow for importing private keys.
   keytool -storepasswd -keystore truststore.jks
   ```
 
+- Create Secrets for the Certificates. Note that the secret data should 
+  use the keys `keystore.jks` and `truststore.jks`.
+  ```sh
+  kubectl create namespace spark
+  kubectl create secret generic spark-hs-jks --from-file=keystore.jks --namespace spark
+  kubectl create secret generic truststore-jks --from-file=truststore.jks --namespace spark
+  ```
+
 - Set the keystore and truststore values when deploying the helm chart.
   Note the keystore and truststore files must be relevant to the helm 
   chart root for helm `.Files.Get` to function properly.
   ```sh
   helm install [...] --set \
-    secrets.keystoreFile=spark-hs.jks,\
+    secrets.keystoreSecretName=spark-hs-jks,\
     secrets.keystorePassword=$keystore_passwd,\
-    secrets.truststoreFile=truststore.jks,\
+    secrets.truststoreSecretName=truststore-jks,\
     secrets.trustStorePassword=$truststore_passwd
   ```
 
@@ -209,8 +217,8 @@ key-pair, as the Java Keytool does not allow for importing private keys.
     --set service.type=LoadBalancer \
     --set secrets.keystorePassword=$keystore_passwd \
     --set secrets.truststorePassword=$truststore_passwd \
-    --set-file secrets.keystoreFile=spark-hs.jks \
-    --set-file secrets.truststoreFile=truststore.jks
+    --set secrets.keystoreSecretName=spark-hs-jks \
+    --set secrets.truststoreSecretName=truststore-jks
   ```
 
 <br>

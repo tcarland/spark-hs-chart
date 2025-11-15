@@ -1,11 +1,7 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "spark-hs.fullname" . -}}
 {{- $svcPort := .Values.service.externalPort -}}
-{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
-apiVersion: extensions/v1beta1
-{{- end }}
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
@@ -23,7 +19,7 @@ spec:
       {{- range .hosts }}
         - {{ . | quote }}
       {{- end }}
-      secretName: {{ .secretName }}
+      secretName: {{ .Values.keystoreSecretName }}
   {{- end }}
 {{- end }}
   rules:
@@ -34,8 +30,10 @@ spec:
         {{- range .paths }}
           - path: {{ . }}
             backend:
-              serviceName: {{ $fullName }}
-              servicePort: {{ $svcPort }}
+              service:
+                name: {{ $fullName }}
+                port: 
+                  number: {{ $svcPort }}
         {{- end }}
   {{- end }}
 {{- end }}
