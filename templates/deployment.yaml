@@ -51,13 +51,13 @@ spec:
             - name: config-volume
               mountPath: /opt/spark/conf/spark-defaults.conf
               subPath: spark-defaults.conf
-            {{- if .Values.ssl.keystoreFile }}
+            {{- if .Values.ssl.keystoreSecretName }}
             - name: keystore-volume
               mountPath: /mnt/secrets/keystore.jks
               subPath: keystore.jks
               readOnly: true
             {{- end }}
-            {{- if .Values.ssl.truststoreFile }}
+            {{- if .Values.ssl.truststoreSecretName }}
             - name: truststore-volume
               mountPath: /mnt/secrets/truststore.jks
               subPath: truststore.jks
@@ -73,15 +73,15 @@ spec:
         - name: config-volume
           configMap:
             name: {{ template "spark-hs.name" . }}-config
-        {{- if .Values.ssl.keystoreFile }}
+        {{- if .Values.ssl.keystoreSecretName }}
         - name: keystore-volume
           secret:
-            secretName: {{ include "spark-hs.name" . }}-keystore
+            secretName: {{ .Values.ssl.keystoreSecretName }}
         {{- end }}
-        {{- if .Values.ssl.truststoreFile }}
+        {{- if .Values.ssl.truststoreSecretName }}
         - name: truststore-volume
           secret:
-            secretName: {{ include "spark-hs.name" . }}-truststore
+            secretName: {{ .Values.ssl.truststoreSecretName }}
         {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
