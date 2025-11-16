@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/tcarland/spark
-  tag: v4.0.1-thebe-2510.25
+  tag: v4.0.1-thebe-2510.30
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -20,7 +20,7 @@ podSecurityContext:
   runAsUser: 185
   runAsGroup: 1000
   fsGroup: 1000
-  # runAsNonRoot: true
+  runAsNonRoot: true
 
 s3:
   enabled: true
@@ -28,13 +28,13 @@ s3:
   endpoint: ''
   accessKey: ''
   secretKey: ''
-  logDirectory: ''
+  logDirectory: 's3a://spark/spark-logs'
   disableCertChecking: false
 
 ssl:
-  keystoreSecretName: ''
+  keystoreSecretName: 'spark-hs-keystore'
   keystorePassword: ''
-  truststoreSecretName: ''
+  truststoreSecretName: 'spark-hs-truststore'
   truststorePassword: 'changeit'
 
 service:
