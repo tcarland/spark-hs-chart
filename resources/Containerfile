@@ -30,8 +30,7 @@ RUN set -ex && \
     apt-get update && \
     ln -s /lib /lib64 && \
     apt install -y bash coreutils curl tini libc6 libpam-modules krb5-user libnss3 procps net-tools logrotate libssl-dev && \
-    mkdir -p /opt/spark && \
-    mkdir -p /opt/spark/work-dir && \
+    mkdir -p /opt/spark /opt/spark/logs /opt/spark/work-dir && \
     touch /opt/spark/RELEASE && \
     rm /bin/sh && \
     ln -sv /bin/bash /bin/sh && \
@@ -66,9 +65,8 @@ RUN if [ -f /opt/spark/ca.crt ]; then \
 ENV SPARK_HOME=/opt/spark
 
 WORKDIR /opt/spark/work-dir
-RUN chown spark:spark /opt/spark/work-dir && \
-    chmod g+w /opt/spark/work-dir && \
-    chmod g+w /opt/spark/logs && \
+RUN chown spark:spark /opt/spark/work-dir /opt/spark/logs && \
+    chmod g+w /opt/spark/work-dir /opt/spark/logs && \
     chmod a+x /opt/decom.sh
 
 ENTRYPOINT [ "/opt/entrypoint.sh" ]

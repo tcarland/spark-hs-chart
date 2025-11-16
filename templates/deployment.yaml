@@ -34,17 +34,17 @@ spec:
             - name: SPARK_NO_DAEMONIZE
               value: "false"
             - name: SPARK_HISTORY_OPTS
-              value: "-Dspark.history.fs.logDirectory={{ .Values.s3logDirectory }} \
-                      -Dspark.hadoop.fs.s3a.endpoint={{ .Values.s3endpoint }} \
-                      -Dspark.hadoop.fs.s3a.access.key={{ .Values.s3accessKey }} \
-                      -Dspark.hadoop.fs.s3a.secret.key={{ .Values.s3secretKey }} \
+              value: "-Dspark.history.fs.logDirectory={{ .Values.s3.logDirectory }} \
+                      -Dspark.hadoop.fs.s3a.endpoint={{ .Values.s3.endpoint }} \
+                      -Dspark.hadoop.fs.s3a.access.key={{ .Values.s3.accessKey }} \
+                      -Dspark.hadoop.fs.s3a.secret.key={{ .Values.s3.secretKey }} \
                       -Dspark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem \
                       -Dspark.hadoop.fs.s3a.committer.magic.enabled=true \
                       -Dspark.hadoop.fs.s3a.path.style.access=true \
                       -Dspark.hadoop.fs.s3a.committer.staging.abort.pending.uploads=true \
                       -Dspark.hadoop.fs.s3a.block.size=512M \
                       -Dspark.hadoop.fs.s3a.committer.staging.conflict-mode=append \
-                      -Dcom.amazonaws.sdk.disableCertChecking={{ .Values.s3disableCertChecking }}"
+                      -Dcom.amazonaws.sdk.disableCertChecking={{ .Values.s3.disableCertChecking }}"
             - name: SPARK_CONF_DIR
               value: /opt/spark/conf
           volumeMounts:
