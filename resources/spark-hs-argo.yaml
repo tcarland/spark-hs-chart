@@ -12,27 +12,27 @@ spec:
   source:
     helm:
       parameters:
-       - name: s3endpoint
+       - name: s3.endpoint
          value: "$S3_ENDPOINT"
-       - name: s3accessKey
+       - name: s3.accessKey
          value: "$S3_ACCESS_KEY"
-       - name: s3secretKey
+       - name: s3.secretKey
          value: "$S3_SECRET_KEY"
-       - name: s3logDirectory
+       - name: s3.logDirectory
          value: "s3a://spark/spark-logs"
        - name: service.type
          value: "LoadBalancer"
-       - name: secrets.keystoreFile
-         value: "$KEYSTORE_FILE"
-       - name: secrets.keystorePassword
+       - name: ssl.keystoreSecretName
+         value: "spark-hs-keystore"
+       - name: ssl.keystorePassword
          value: "$KEYSTORE_PASSWD"
-       - name: secrets.truststoreFile
-         value: "$TRUSTSTORE_FILE"
-       - name: secrets.truststorePassword
+       - name: ssl.truststoreSecretName
+         value: "spark-hs-truststore"
+       - name: ssl.truststorePassword
          value: "$TRUSTSTORE_PASSWD"
     chart: spark-hs
     repoURL: https://tcarland.github.io/spark-hs-chart/
-    targetRevision: 1.4.1
+    targetRevision: 1.5.1
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
