@@ -1,4 +1,4 @@
-Spark 3 History Server Helm Chart
+Spark History Server Helm Chart
 =================================
 
 A helm chart for deploying the Spark History Server to Kubernetes
@@ -121,7 +121,7 @@ The typical image build process:
 ```bash
 export SPARK_HOME=/opt/spark
 cd $SPARK_HOME
-./bin/docker-image-tool.sh -r quay.io/myacct -t 3.5.6-myrelease build
+./bin/docker-image-tool.sh -r quay.io/myacct -t 4.0.1-myrelease build
 [...]
 Successfully build f07cd00df877
 Successfully tagged quay.io/myacct/spark:3.5.6-myrelease
@@ -140,8 +140,8 @@ that Spark images are very large, we can use the main spark image for
 the HistoryServer as well for Spark jobs reducing the large blob size 
 accumulated.
 
-Note that Spark 4 has defined profiles only for Scala 2.13, 2.12 is no 
-longer supported.
+Note that Spark 4 has defined profiles only for Scala 2.13 as 2.12 is 
+no longer supported.
 
 <br>
 
