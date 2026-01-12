@@ -121,10 +121,10 @@ The typical image build process:
 ```bash
 export SPARK_HOME=/opt/spark
 cd $SPARK_HOME
-./bin/docker-image-tool.sh -r quay.io/myacct -t 4.0.1-myrelease build
+./bin/docker-image-tool.sh -r quay.io/myacct -t 4.1.1-myrelease build
 [...]
 Successfully build f07cd00df877
-Successfully tagged quay.io/myacct/spark:3.5.6-myrelease
+Successfully tagged quay.io/myacct/spark:4.1.1-myrelease
 ```
 
 ### Scala Versions
@@ -163,14 +163,14 @@ key-pair, as the Java Keytool does not allow for importing private keys.
 - Create a PKCS#12 container from a key pair.
   ```sh
   openssl pkcs12 -export -in spark-hs.crt -inkey spark-hs.key \
-  -name spark-hs -out spark-hs.pfx
+    -name spark-hs -out spark-hs.pfx
   ```
 
 - Create the private Keystore
   ```sh
   keystore_passwd="mykeypass"
   keytool -importkeystore -deststorepass $keystore_passwd \
-  -destkeystore spark-hs.jks -srckeystore spark-hs.pfx -srcstoretype PKCS12
+    -destkeystore spark-hs.jks -srckeystore spark-hs.pfx -srcstoretype PKCS12
   ```
 
 - Create and/or add the CA Certificate to the truststore. This will prompt
