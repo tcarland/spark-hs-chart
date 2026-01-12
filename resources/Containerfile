@@ -20,7 +20,7 @@ FROM azul/zulu-openjdk:${java_image_tag}
 LABEL org.opencontainers.image.authors="Apache Spark project <dev@spark.apache.org>"
 LABEL org.opencontainers.image.licenses="Apache-2.0"
 LABEL org.opencontainers.image.ref.name="Apache Spark Scala/Java Image"
-LABEL org.opencontainers.image.version="io"
+LABEL org.opencontainers.image.version="dione"
 
 ARG hive_uri=https://archive.apache.org/dist/hive
 ARG hive_version=3.1.3
