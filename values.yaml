@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/tcarland/spark
-  tag: v4.1.1-cyllene-2601.10
+  tag: v4.1.1-callisto-2601.20
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
