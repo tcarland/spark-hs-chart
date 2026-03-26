@@ -1,10 +1,12 @@
-
 *.b64
 *.pfx
+*.pem
 *.jks
 *.crt
 *.cert
 *.key
 *.sw*
 .zed
+.vscode
+
 cacerts
