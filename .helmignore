@@ -1,5 +1,5 @@
 .DS_Store
-# Common VCS dirs
+
 .git/
 .gitignore
 .bzr/
@@ -8,10 +8,10 @@
 *.swp
 *.bak
 *.tmp
+*.tmproj
 *.orig
 *~
 
 .project
 .idea/
-*.tmproj
 .vscode/
