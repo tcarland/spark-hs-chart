@@ -1,9 +1,9 @@
 Spark History Server Helm Chart
 =================================
 
-A helm chart for deploying the Spark History Server to Kubernetes
+A *Helm* chart for deploying the *Spark History Server* to Kubernetes
 using S3 Object Storage for the Spark Event Logs. Many of the existing
-charts (at the time of first commit) do not account for the S3 
+charts (at the time of first commit) do not account for the proper S3 
 requirements. This chart was created specifically for Apache Spark 
 using S3 for the history logs.
 
@@ -14,15 +14,17 @@ using S3 for the history logs.
 The chart takes a few primary config parameters; other options
 can be customized by adjusting the values file.
 
-|     Option     | Description |
-| -------------- | ----------- |
-| s3endpoint     | The S3 Endpoint URL   `https://minio.minio.svc` |
-| s3logDirectory | The path to S3 bucket `s3a://spark/spark-logs` |
-| s3accessKey    | The S3 Access Key |
-| s3secretKey    | The S3 Secret Key |
+|     Option      | Description |
+| --------------- | ----------- |
+| s3.endpoint     | The S3 Endpoint URL   `https://minio.minio.svc` |
+| s3.logDirectory | The path to S3 bucket `s3a://spark/spark-logs` |
+| s3.accessKey    | The S3 Access Key |
+| s3.secretKey    | The S3 Secret Key |
+| s3.region       | The S3 Region Name |
 
-- *s3endpoint* in the format of `https://minio.minio.svc.cluster.local:443`
-- *s3logDirectory* defines the bucket path, which defaults to `s3a://spark/spark-logs`
+- *s3.endpoint* in the format of `https://minio.minio.svc.cluster.local:443`
+- *s3.region* is required by the AWS S3 SDK V2 library.
+- *s3.logDirectory* defines the bucket path, which defaults to `s3a://spark/spark-logs`
 - Additional values for TLS is described in this [section](#configuring-tls)
 
 <br>
@@ -54,10 +56,11 @@ Alternative install via helm command-line.
 ```sh
 helm upgrade --install spark-hs . \
   --create-namespace --namespace spark \
-  --set s3endpoint=${S3_ENDPOINT} \
-  --set s3accessKey=${S3_ACCESS_KEY} \
-  --set s3secretKey=${S3_SECRET_KEY} \
-  --set s3logDirectory=s3a://spark/spark-logs \
+  --set s3.endpoint=${S3_ENDPOINT} \
+  --set s3.region=${S3_REGION} \
+  --set s3.accessKey=${S3_ACCESS_KEY} \
+  --set s3.secretKey=${S3_SECRET_KEY} \
+  --set s3.logDirectory=s3a://spark/spark-logs \
   --set service.type=LoadBalancer \
   --set image.repository=gcr.io/myproject/spark
 ```
@@ -87,10 +90,8 @@ A quick validation would be to port-forward the history server port.
 # get pod name and service port
 relname="spark-hs"
 ns="spark"
-
 POD_NAME=$(kubectl get pods -n $ns | grep $relname | awk '{ print $1 }')
 HS_PORT=$(kubectl get service $relname -n $ns -o=json | jq .spec.ports[0].port)
-
 # port forward
 kubectl port-forward $POD_NAME $HS_PORT --namespace $ns &
 ```
@@ -114,7 +115,7 @@ Custom JARs can be added to $SPARK_HOME/jars prior to building the
 image, but the jars should be tested to ensure there are no dependency
 collisions that would require shading resources.
 
-The dockerfile used by the image-tool is located at
+The dockerfile used by the *docker-image-tool* is located at
 *$SPARK_HOME/kubernetes/dockerfiles/spark/Dockerfile*
 
 The typical image build process:
@@ -130,7 +131,7 @@ Successfully tagged quay.io/myacct/spark:4.1.1-myrelease
 ### Scala Versions
 
 In the context of the history server, the underlying Scala version
-does not really matter, Spark 3 supports either 2.12 or 2.13.
+does not really matter, Spark 3 supports either 2.12 (deprecated) or 2.13.
 It can be useful to tag the image accordingly as this version is
 key when it comes to other 3rd party Scala dependencies such as Iceberg
 or Hudi. Unfortunately, some 3rd party projects have not fully adopted
