@@ -20,6 +20,11 @@ FROM eclipse-temurin:${java_image_tag}
 ARG hive_uri=https://downloads.apache.org
 ARG spark_uid=185
 
+LABEL org.opencontainers.image.authors="Apache Spark project <dev@spark.apache.org>"
+LABEL org.opencontainers.image.licenses="Apache-2.0"
+LABEL org.opencontainers.image.ref.name="Apache Spark 3 Image"
+LABEL org.opencontainers.image.version=""
+
 RUN set -ex && \
     sed -i 's/http:\/\/deb.\(.*\)/https:\/\/deb.\1/g' /etc/apt/sources.list && \
     apt-get update && \

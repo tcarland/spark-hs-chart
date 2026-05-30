@@ -1,16 +1,36 @@
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1
+kind: Job
 metadata:
   name: "{{ include "spark-hs.name" . }}-test-connection"
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "spark-hs.labels" . | nindent 4 }}
   annotations:
-    "helm.sh/hook": test-success
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": before-hook-creation
 spec:
-  containers:
-    - name: wget
-      image: busybox:1.31.1
-      command: ['wget']
-      args: ['{{ include "spark-hs.name" . }}:{{ .Values.service.externalPort }}']
-  restartPolicy: Never
+  backoffLimit: 0
+  template:
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Never
+      containers:
+        - name: healthcheck
+          image: "{{ .Values.test.image.repository }}:{{ .Values.test.image.tag }}"
+          imagePullPolicy: {{ .Values.test.image.pullPolicy }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              for x in $(seq 1 5); do
+                sleep $((60 * x))
+                wget {{ include "spark-hs.name" . }}:{{ .Values.service.externalPort }}
+                rt=$?
+                if [ $rt -eq 0 ]; then
+                  exit 0
+                fi
+              done
+              exit 1

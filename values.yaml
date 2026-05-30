@@ -68,3 +68,9 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+test:
+  image:
+    repository: busybox
+    tag: 1.37.0
+    pullPolicy: IfNotPresent
