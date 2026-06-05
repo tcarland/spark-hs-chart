@@ -27,7 +27,7 @@ spec:
             - |
               for x in $(seq 1 5); do
                 sleep $((60 * x))
-                wget {{ include "spark-hs.name" . }}:{{ .Values.service.externalPort }}
+                wget --no-check-certificate {{ include "spark-hs.name" . }}:{{ .Values.service.externalPort }}
                 rt=$?
                 if [ $rt -eq 0 ]; then
                   exit 0
