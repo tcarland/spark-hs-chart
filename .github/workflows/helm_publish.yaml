@@ -1,0 +1,48 @@
+name: Publish Helm Chart
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout with full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.17.0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Checkout gh-pages branch
+        run: git checkout gh-pages
+
+      - name: Merge master into gh-pages
+        run: git merge master --no-edit
+
+      - name: Package Helm chart into docs/
+        run: helm package . --destination docs/
+
+      - name: Update Helm repo index
+        run: helm repo index docs --url https://tcarland.github.io/spark-hs-chart/
+
+      - name: Stage and commit chart release
+        run: |
+          git add docs/
+          git commit -m "Release ${{ github.ref_name }}: publish helm chart"
+
+      - name: Push to gh-pages
+        run: git push origin gh-pages
