@@ -122,10 +122,10 @@ The typical image build process:
 ```bash
 export SPARK_HOME=/opt/spark
 cd $SPARK_HOME
-./bin/docker-image-tool.sh -r quay.io/myacct -t 4.1.1-myrelease build
+./bin/docker-image-tool.sh -r quay.io/myacct -t 4.1.3-myrelease build
 [...]
 Successfully build f07cd00df877
-Successfully tagged quay.io/myacct/spark:4.1.1-myrelease
+Successfully tagged quay.io/myacct/spark:4.1.3-myrelease
 ```
 
 ### Scala Versions
@@ -141,7 +141,7 @@ that Spark images are very large, we can use the main spark image for
 the HistoryServer as well for Spark jobs reducing the large blob size 
 accumulated.
 
-Note that Spark 4 has defined profiles only for Scala 2.13 as 2.12 is 
+**NOTE** that Spark 4 has defined profiles *only* for Scala 2.13 as 2.12 is 
 no longer supported.
 
 <br>
