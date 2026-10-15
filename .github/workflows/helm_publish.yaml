@@ -11,9 +11,10 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout with full history
+      - name: Checkout release tag with full history
         uses: actions/checkout@v6
         with:
+          ref: ${{ github.ref }}
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -27,14 +28,17 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Package Helm chart
+        run: helm package . --destination "$RUNNER_TEMP"
+
       - name: Checkout gh-pages branch
         run: git checkout gh-pages
 
       - name: Merge master into gh-pages
         run: git merge origin/master --no-edit
 
-      - name: Package Helm chart into docs/
-        run: helm package . --destination docs/
+      - name: Move Helm chart into docs/
+        run: mv "$RUNNER_TEMP"/*.tgz docs/
 
       - name: Update Helm repo index
         run: helm repo index docs --url https://tcarland.github.io/spark-hs-chart/
