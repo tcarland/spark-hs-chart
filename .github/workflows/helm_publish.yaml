@@ -40,6 +40,13 @@ jobs:
       - name: Move Helm chart into docs/
         run: mv "$RUNNER_TEMP"/*.tgz docs/
 
+      - name: Keep the latest 8 chart archives
+        run: |
+          find docs -maxdepth 1 -type f -name '*.tgz' -printf '%p\n' \
+            | sort --version-sort \
+            | head --lines=-8 \
+            | xargs --no-run-if-empty rm --
+
       - name: Update Helm repo index
         run: helm repo index docs --url https://tcarland.github.io/spark-hs-chart/
 
