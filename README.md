@@ -42,9 +42,9 @@ being applied:
 kubectl create namespace spark
 kubectl create serviceaccount spark --namespace spark
 kubectl create clusterrolebinding spark-rolebinding \
---clusterrole=edit \
---serviceaccount=spark:spark \
---namespace=spark
+  --clusterrole=edit \
+  --serviceaccount=spark:spark \
+  --namespace=spark
 ```
 
 Install by a values file
@@ -70,7 +70,7 @@ served from *github.io*.
 ```sh
 helm repo add spark-hs-chart https://tcarland.github.io/spark-hs-chart/
 helm install spark-history-server spark-hs-chart/spark-hs \
---create-namespace --namespace spark --set option=foo
+  --create-namespace --namespace spark --set option=foo
 ```
 
 ## Uninstall Chart
