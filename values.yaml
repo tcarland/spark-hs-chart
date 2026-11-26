@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/tcarland/spark
-  tag: v4.1.4-europa-2611.01
+  tag: v4.1.4-elara-2611.25
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
